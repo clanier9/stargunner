@@ -1,5 +1,7 @@
 package gameEngine.character;
 
+import java.util.UUID;
+
 import graphicslib3D.Matrix3D;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
@@ -11,12 +13,14 @@ public class BaseCharacter extends TriMesh {
 	private Vector3D foward;
 	private Vector3D side;
 	private Vector3D up;
+	private UUID id;
 	
 	public BaseCharacter() {
 		location = new Point3D(0,0,0);
 		foward = new Vector3D(0,0,1);
 		side = new Vector3D(1,0,0);
 		up  = new Vector3D(0,1,0);
+		id = UUID.randomUUID();
 		//updateTranslation();
 	}
 	
@@ -26,7 +30,11 @@ public class BaseCharacter extends TriMesh {
 		side = new Vector3D(1,0,0);
 		up  = new Vector3D(0,1,0);
 		updateTranslation();
-		
+		id = UUID.randomUUID();
+	}
+
+	public UUID getId() {
+		return id;
 	}
 
 	public Point3D getLocation() {
