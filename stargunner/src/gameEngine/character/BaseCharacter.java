@@ -11,12 +11,14 @@ public class BaseCharacter extends TriMesh {
 	private Vector3D foward;
 	private Vector3D side;
 	private Vector3D up;
+	private float speed;
 	
 	public BaseCharacter() {
 		location = new Point3D(0,0,0);
 		foward = new Vector3D(0,0,1);
 		side = new Vector3D(1,0,0);
 		up  = new Vector3D(0,1,0);
+		setSpeed(0.05f);
 		//updateTranslation();
 	}
 	
@@ -25,6 +27,7 @@ public class BaseCharacter extends TriMesh {
 		foward = new Vector3D(0,0,1);
 		side = new Vector3D(1,0,0);
 		up  = new Vector3D(0,1,0);
+		setSpeed(0.05f);
 		updateTranslation();
 		
 	}
@@ -125,6 +128,14 @@ public class BaseCharacter extends TriMesh {
 
 	public void setUpVector(Vector3D up) {
 		this.up = up;
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(float speed) {
+		this.speed = speed;
 	}
 
 }

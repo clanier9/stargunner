@@ -14,7 +14,7 @@ public class LeftAction extends AbstractInputAction {
 	@Override
 	public void performAction(float time, Event evt) 
 	{
-		float sensitivity = 0.05f;
+		float sensitivity = player.getSpeed();
 		if (evt.getValue() > 0.2) 
 		{ 
 			float move = (evt.getValue() * time * sensitivity);
