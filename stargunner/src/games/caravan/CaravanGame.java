@@ -37,7 +37,7 @@ public class CaravanGame extends BaseGame {
 	private HUDString score2String;
 	private HUDString timeString;
 	
-	private static final String texFolder = "a3" + File.separator + "Textures";
+	private static final String texFolder = "." + File.separator + "Textures";
 	
 	private ICamera camera;
 	private IRenderer renderer;
