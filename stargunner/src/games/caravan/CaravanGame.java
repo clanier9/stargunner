@@ -5,7 +5,8 @@ import java.io.File;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import gameEngine.input.action.*;
-import gameEngine.input.action.QuitGameAction;
+import games.caravan.character.RegularShip;
+import games.caravan.character.Ship;
 import graphicslib3D.Matrix3D;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
@@ -42,9 +43,12 @@ public class CaravanGame extends BaseGame {
 	private ICamera camera;
 	private IRenderer renderer;
 	private IDisplaySystem display;
+	private IInputManager im;
 	
-//	private Avatar p1;
-//	private Avatar p2;
+	private String kbName;
+	
+	private Ship p1;
+	private Ship p2;
 	
 	private SkyBox sky;
 	
@@ -84,9 +88,9 @@ public class CaravanGame extends BaseGame {
 		IAction ry = new MoveRYAxis(camera, 0.2f);
 		
 		//Binding Actions to input
-		IInputManager im = getInputManager();
+		im = getInputManager();
 		
-		String kbName = im.getKeyboardName();
+		kbName = im.getKeyboardName();
 		
 		ControllerEnvironment ce = ControllerEnvironment.getDefaultEnvironment();
 		Controller[] cs = ce.getControllers();
@@ -169,6 +173,8 @@ public class CaravanGame extends BaseGame {
 					IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 		}
 		
+		
+		
 		initGameObjects();
 		initPlayers();
 		update(0);
@@ -176,6 +182,32 @@ public class CaravanGame extends BaseGame {
 
 	private void initPlayers() {
 		
+		p1 = new RegularShip(new Point3D(0,3,0));
+		addGameWorldObject(p1);
+		
+		IAction lstrafe = new LeftAction(p1);
+		IAction rstrafe = new RightAction(p1);
+		IAction fwd = new FowardAction(p1);
+		IAction bck = new BackwardAction(p1);
+		/*
+		im.associateAction (
+				kbName, net.java.games.input.Component.Identifier.Key.UP,
+				fwd, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		
+		im.associateAction (
+				kbName, net.java.games.input.Component.Identifier.Key.DOWN,
+				bck, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		
+		im.associateAction (
+				kbName, net.java.games.input.Component.Identifier.Key.LEFT,
+				lstrafe, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		
+		im.associateAction (
+				kbName, net.java.games.input.Component.Identifier.Key.RIGHT,
+				rstrafe, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		*/
+		camera.setLocation(new Point3D(5,15,5));
+		camera.lookAt(new Point3D(0,0,0), new Vector3D(0,1,0));
 		
 	}
 
@@ -228,7 +260,7 @@ public class CaravanGame extends BaseGame {
 		// specify terrain origin so heightmap (0,0) is at world origin
 		float cornerHeight =
 		heightMap.getTrueHeightAtPoint(0, 0) * heightScale;
-		Point3D terrainOrigin = new Point3D(0, -cornerHeight, 0);
+		Point3D terrainOrigin = new Point3D(-64.5, -cornerHeight, -64.5);
 		
 		// create a terrain block using the height map
 		String name = "Terrain:" + heightMap.getClass().getSimpleName();
