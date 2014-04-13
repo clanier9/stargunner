@@ -42,12 +42,14 @@ public class MyNetworkingClient extends CaravanGame
 			e.printStackTrace(); 
 		} 
 		if (thisClient != null) { thisClient.sendJoinMessage(); } 
+		super.initGame();
 	} 
 	
 	protected void update(float time) 
 	{ 
 		// same as before, plus process any packets received from server 
 	 	if (thisClient != null) thisClient.processPackets(); 
+	 	super.update(time);
 	} 
 	
 	protected void shutdown() 

@@ -40,7 +40,8 @@ public class MyClient extends GameConnectionClient
 				if(msgTokens[1].compareTo("success") == 0) 
 				{ 
 					game.setConnected(true); 
-					sendCreateMessage(game.getPlayerPosition()); 
+					System.out.println("Connected successfully!");
+//					sendCreateMessage(game.getPlayerPosition()); 
 				} 
 				if(msgTokens[1].compareTo("failure") == 0) 
 					game.setConnected(false); 
