@@ -1,21 +1,21 @@
 package gameEngine.networking;
 
 import gameEngine.character.BaseCharacter;
-import graphicslib3D.Vector3D;
-
+import games.caravan.CaravanGame;
+import graphicslib3D.Point3D;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import sage.app.BaseGame;
 import sage.networking.IGameConnection.ProtocolType;
 
-public class MyNetworkingClient extends BaseGame 
+public class MyNetworkingClient extends CaravanGame 
 { 
 	private String serverAddress;
 	private int serverPort;
 	private ProtocolType serverProtocol;
 	private MyClient thisClient;
+	private boolean connected;
 
 	// assumes main() gets address/port from command line 
 	public MyNetworkingClient(String serverAddr, int sPort) 
@@ -72,14 +72,16 @@ public class MyNetworkingClient extends BaseGame
 
 	}
 
-	public void setIsConnected(boolean b) {
-		// TODO Auto-generated method stub
-		
+	public void setConnected(boolean b) {
+		connected = b;
+	}
+	
+	public boolean isConnected() {
+		return connected;
 	}
 
-	public Vector3D getPlayerPosition() {
-		// TODO Auto-generated method stub
-		return null;
+	public Point3D getPlayerPosition() {
+		return getPlayer().getLocation();
 	}
 }
 

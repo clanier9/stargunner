@@ -2,10 +2,12 @@ package games.caravan;
 
 import java.io.File;
 
+import javax.swing.JOptionPane;
+
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import gameEngine.input.action.*;
-import gameEngine.input.action.QuitGameAction;
+import games.caravan.character.Ship;
 import graphicslib3D.Matrix3D;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
@@ -43,8 +45,7 @@ public class CaravanGame extends BaseGame {
 	private IRenderer renderer;
 	private IDisplaySystem display;
 	
-//	private Avatar p1;
-//	private Avatar p2;
+	private Ship p1;
 	
 	private SkyBox sky;
 	
@@ -56,7 +57,11 @@ public class CaravanGame extends BaseGame {
 		time = 0;
 	}
 	
-	public void initGame()
+	public Ship getPlayer() {
+		return p1;
+	}
+
+	protected void initGame()
 	{
 		//renderer = display.getRenderer();
 		display = this.getDisplaySystem();
