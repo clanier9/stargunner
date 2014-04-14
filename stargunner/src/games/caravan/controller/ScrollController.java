@@ -7,8 +7,8 @@ public class ScrollController extends Controller {
 
 	private double translationRate;
 	
-	public ScrollController() {
-		// TODO Auto-generated constructor stub
+	public ScrollController(double rate) {
+		translationRate = rate;
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import net.java.games.input.Event;
 import gameEngine.input.action.*;
 import games.caravan.character.RegularShip;
 import games.caravan.character.Ship;
+import games.caravan.controller.ScrollController;
 import graphicslib3D.Matrix3D;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
@@ -30,6 +31,7 @@ import sage.input.IInputManager;
 import sage.input.action.AbstractInputAction;
 import sage.input.action.IAction;
 import sage.renderer.IRenderer;
+import sage.scene.Group;
 import sage.scene.HUDString;
 import sage.scene.SceneNode;
 import sage.scene.SkyBox;
@@ -64,8 +66,12 @@ public class CaravanGame extends BaseGame {
 	private Ship p1;
 	private Ship p2;
 
-	
 	private SkyBox sky;
+	
+	private Group background;
+	private Group bullets;
+	
+	private ScrollController scroller;
 	
 	private IEventManager eventMgr;
 	
@@ -252,12 +258,20 @@ public class CaravanGame extends BaseGame {
 		sky.setTexture(SkyBox.Face.East, spaceTexture);
 		sky.setTexture(SkyBox.Face.West, spaceTexture);
 		addGameWorldObject(sky);
-		initTerrain();
+		
+		scroller = new ScrollController(0.002);
+		
+		TerrainBlock t = initTerrain();
+		background = new Group();
+		background.addChild(t);
+		background.addController(scroller);
+		scroller.addControlledNode(background);
+		addGameWorldObject(background);
 		
 		
 	}
 	
-	private void initTerrain()
+	private TerrainBlock initTerrain()
 	{ // create height map and terrain block
 		HillHeightMap myHillHeightMap =
 		new HillHeightMap(129, 2000, 5.0f, 20.0f,(byte)2, 12345);
@@ -277,7 +291,7 @@ public class CaravanGame extends BaseGame {
 		
 		// apply the texture to the terrain
 		hillTerrain.setRenderState(groundState);
-		addGameWorldObject(hillTerrain);
+		return hillTerrain;
 	}
 	
 	private TerrainBlock createTerBlock(AbstractHeightMap heightMap)
