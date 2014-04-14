@@ -1,8 +1,9 @@
-package gameEngine.networking;
+package games.caravan;
 
 import gameEngine.character.BaseCharacter;
-import games.caravan.CaravanGame;
+import gameEngine.networking.MyClient;
 import graphicslib3D.Point3D;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;

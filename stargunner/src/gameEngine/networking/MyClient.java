@@ -1,6 +1,7 @@
 package gameEngine.networking;
 
-import gameEngine.networking.MyNetworkingClient.GhostAvatar;
+import games.caravan.MyNetworkingClient;
+import games.caravan.MyNetworkingClient.GhostAvatar;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
 

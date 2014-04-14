@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import gameEngine.networking.GameServerTCP;
-import gameEngine.networking.MyNetworkingClient;
 import games.caravan.CaravanGame;
+import games.caravan.MyNetworkingClient;
 
 public class Starter {
 
