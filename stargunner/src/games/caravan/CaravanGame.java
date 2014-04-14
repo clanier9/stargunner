@@ -1,11 +1,21 @@
 package games.caravan;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.swing.JOptionPane;
 
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
+import net.java.games.input.Event;
 import gameEngine.input.action.*;
 import games.caravan.character.RegularShip;
 import games.caravan.character.Ship;
@@ -17,9 +27,11 @@ import sage.camera.ICamera;
 import sage.display.IDisplaySystem;
 import sage.event.IEventManager;
 import sage.input.IInputManager;
+import sage.input.action.AbstractInputAction;
 import sage.input.action.IAction;
 import sage.renderer.IRenderer;
 import sage.scene.HUDString;
+import sage.scene.SceneNode;
 import sage.scene.SkyBox;
 import sage.scene.state.RenderState.RenderStateType;
 import sage.scene.state.TextureState;
@@ -57,6 +69,10 @@ public class CaravanGame extends BaseGame {
 	
 	private IEventManager eventMgr;
 	
+	private ScriptEngine engine; 
+	private String scriptName = "UpdateCharacter.js"; 
+	private File scriptFile;
+	
 	public CaravanGame() {
 		score = 0;
 		score2 = 0;
@@ -69,6 +85,13 @@ public class CaravanGame extends BaseGame {
 
 	protected void initGame()
 	{
+		ScriptEngineManager factory = new ScriptEngineManager(); 
+		List<ScriptEngineFactory> list = factory.getEngineFactories(); 
+		engine = factory.getEngineByName("js"); 
+		scriptFile = new File(scriptName); 
+		runScript();
+		
+		
 		//renderer = display.getRenderer();
 		display = this.getDisplaySystem();
 		renderer = display.getRenderer();
@@ -190,6 +213,7 @@ public class CaravanGame extends BaseGame {
 	private void initPlayers() {
 		
 		p1 = new RegularShip(new Point3D(0,3,0));
+		executeScript(engine, scriptName);
 		addGameWorldObject(p1);
 		
 		IAction lstrafe = new LeftAction(p1);
@@ -284,6 +308,58 @@ public class CaravanGame extends BaseGame {
 		sky.setLocalTranslation(camTranslation);
 		super.update(elapsedTimeMS);
 	
+	}
+	
+	private void runScript() 
+	{ 
+		try 
+		{ 
+			FileReader fileReader = new FileReader(scriptFile); 
+			engine.eval(fileReader); 
+			fileReader.close(); 
+		} 
+		catch (FileNotFoundException e1) 
+		{ 
+			System.out.println(scriptFile + " not found " + e1);
+		} 
+		catch (IOException e2) 
+		{ 
+			System.out.println("IO problem with " + scriptFile + e2); 
+		} 
+		catch (ScriptException e3) 
+		{ 
+			System.out.println("ScriptException in " + scriptFile + e3); 
+		} 
+		catch (NullPointerException e4) 
+		{ 
+			System.out.println ("Null ptr exception reading " + scriptFile + e4); 
+		} 
+	} 
+	
+	private void executeScript(ScriptEngine engine, String scriptFileName) {
+		//cast the engine so it supports invoking functions 
+		Invocable invocableEngine = (Invocable) engine ; 
+		
+		//SceneNode to be updated
+		SceneNode s = p1;
+		
+		// invoke the script function 
+		try 
+		{ 
+			invocableEngine.invokeFunction("updateCharacter", s); 
+		} 
+		catch (ScriptException e1) 
+		{ 
+			System.out.println("ScriptException in " + scriptFile + e1);
+		} 
+		catch (NoSuchMethodException e2) 
+		{ 
+			System.out.println("No such method exception in " + scriptFile + e2);
+		} 
+		catch (NullPointerException e3) 
+		{ 
+			System.out.println ("Null ptr exception reading " + scriptFile + e3);
+		} 
 	}
 
 }

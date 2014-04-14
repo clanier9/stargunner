@@ -1,5 +1,7 @@
 package games.caravan.character;
 
+import java.awt.Color;
+
 import gameEngine.character.BaseCharacter;
 import graphicslib3D.Point3D;
 
@@ -8,6 +10,7 @@ public abstract class Ship extends BaseCharacter {
 	public enum state {LIVE, DEAD, INVINICIBLE};
 	
 	private state myState;
+	private Color myColor;
 	
 	public Ship() {
 		
@@ -37,7 +40,9 @@ public abstract class Ship extends BaseCharacter {
 		this.myState = myState;
 	}
 	
-	
+	public void setColor(Color c) {
+		myColor = c;
+	}
 	
 
 }
