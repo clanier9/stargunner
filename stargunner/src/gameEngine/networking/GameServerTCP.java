@@ -16,6 +16,8 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 	 
 	public void acceptClient(IClientInfo ci, Object o) 
 	{ 
+		if (!getClients().isEmpty()) { return; } //only 1 other player allowed
+		
 		String message = (String)o; 
 		String[] messageTokens = message.split(","); 
 	 
@@ -30,7 +32,11 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 			} 
 		} 
 	} 
-	 
+	
+	public boolean hasConnection() {
+		return (!getClients().isEmpty());
+	}
+
 	public void processPacket(Object o, InetAddress senderIP, int sndPort) 
 	{ 
 		String message = (String) o; 

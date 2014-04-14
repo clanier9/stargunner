@@ -1,6 +1,7 @@
 package gameEngine.networking;
 
 import gameEngine.networking.MyNetworkingClient.GhostAvatar;
+import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
 
 import java.io.IOException;
@@ -38,11 +39,14 @@ public class MyClient extends GameConnectionClient
 				// format: join, success or join, failure 			
 				if(msgTokens[1].compareTo("success") == 0) 
 				{ 
-					game.setIsConnected(true); 
-					sendCreateMessage(game.getPlayerPosition()); 
+					//game.setConnected(true); 
+					//sendCreateMessage(game.getPlayerPosition()); 
+					game.setConnected(true); 
+					System.out.println("Connected successfully!");
+//					sendCreateMessage(game.getPlayerPosition()); 
 				} 
 				if(msgTokens[1].compareTo("failure") == 0) 
-					game.setIsConnected(false); 
+					game.setConnected(false); 
 			} 
 			if(msgTokens[0].compareTo("bye") == 0) // receive “bye” 
 			{ 
@@ -81,7 +85,7 @@ public class MyClient extends GameConnectionClient
 		}
 	}
 
-	public void sendCreateMessage(Vector3D pos) 
+	public void sendCreateMessage(Point3D pos) 
 	{	
 		// format: (create, localId, x,y,z) 
 		try 

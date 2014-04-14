@@ -41,8 +41,18 @@ public class RegularShip extends Ship {
 	}
 
 	@Override
-	public void fire() {
-		
+	public Bullet[] fire() {
+		Point3D loc = getLocation();
+		RegularBullet b1 = new RegularBullet();
+		RegularBullet b2 = new RegularBullet();
+		Point3D loc2 = new Point3D(loc.getX() - 0.3, loc.getY(), loc.getZ() + 0.2);
+		Point3D loc3 = new Point3D(loc.getX() + 0.3, loc.getY(), loc.getZ() + 0.2);
+		b1.setLocation(loc2);
+		b2.setLocation(loc3);
+		Bullet bul[] = new Bullet[2];
+		bul[0] = b1;
+		bul[1] = b2;
+		return bul;
 
 	}
 

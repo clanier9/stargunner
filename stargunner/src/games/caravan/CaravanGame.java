@@ -2,6 +2,8 @@ package games.caravan;
 
 import java.io.File;
 
+import javax.swing.JOptionPane;
+
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import gameEngine.input.action.*;
@@ -49,6 +51,7 @@ public class CaravanGame extends BaseGame {
 	
 	private Ship p1;
 	private Ship p2;
+
 	
 	private SkyBox sky;
 	
@@ -60,7 +63,11 @@ public class CaravanGame extends BaseGame {
 		time = 0;
 	}
 	
-	public void initGame()
+	public Ship getPlayer() {
+		return p1;
+	}
+
+	protected void initGame()
 	{
 		//renderer = display.getRenderer();
 		display = this.getDisplaySystem();
@@ -189,7 +196,7 @@ public class CaravanGame extends BaseGame {
 		IAction rstrafe = new RightAction(p1);
 		IAction fwd = new FowardAction(p1);
 		IAction bck = new BackwardAction(p1);
-		/*
+		
 		im.associateAction (
 				kbName, net.java.games.input.Component.Identifier.Key.UP,
 				fwd, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
@@ -205,8 +212,8 @@ public class CaravanGame extends BaseGame {
 		im.associateAction (
 				kbName, net.java.games.input.Component.Identifier.Key.RIGHT,
 				rstrafe, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
-		*/
-		camera.setLocation(new Point3D(5,15,5));
+		
+		camera.setLocation(new Point3D(0,25,-23));
 		camera.lookAt(new Point3D(0,0,0), new Vector3D(0,1,0));
 		
 	}
@@ -276,6 +283,7 @@ public class CaravanGame extends BaseGame {
 		camTranslation.translate(camLoc.getX(), camLoc.getY(), camLoc.getZ());
 		sky.setLocalTranslation(camTranslation);
 		super.update(elapsedTimeMS);
+	
 	}
 
 }

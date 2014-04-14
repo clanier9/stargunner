@@ -18,7 +18,7 @@ public abstract class Ship extends BaseCharacter {
 		
 	}
 	
-	public abstract void fire();
+	public abstract Bullet[] fire();
 	
 	public void die() //SINISTER
 	{
@@ -36,6 +36,7 @@ public abstract class Ship extends BaseCharacter {
 	public void setMyState(state myState) {
 		this.myState = myState;
 	}
+	
 	
 	
 
