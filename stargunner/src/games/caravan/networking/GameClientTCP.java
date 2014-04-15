@@ -168,7 +168,10 @@ public class GameClientTCP extends GameConnectionClient
 	{
 		try 
 		{ 
-			String message = new String("dsfr," + id + "," + remId); 
+			String message = new String("dsfr," + id + "," + remId);
+			message += "," + pos.getX(); 
+			message += "," + pos.getY(); 
+			message += "," + pos.getZ(); 
 			sendPacket(message); 
 		} 
 		catch (IOException e) 
