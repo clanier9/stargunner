@@ -31,8 +31,8 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 				System.out.println("join received");
 				// format: join,localid 
 				UUID clientID = UUID.fromString(messageTokens[1]); 
-				sendJoinedMessage(clientID, true);
 				addClient(ci, clientID);  
+				sendJoinedMessage(clientID, true);
 			} 
 		} 
 	} 
@@ -59,7 +59,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 			if(msgTokens[0].compareTo("create") == 0) // receive “create” 
 			{ // format: create,localid,x,y,z 
 				UUID clientID = UUID.fromString(msgTokens[1]); 
-				Point3D pos = new Point3D(Integer.parseInt(msgTokens[2]), Integer.parseInt(msgTokens[3]), Integer.parseInt(msgTokens[4])); 
+				Point3D pos = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4])); 
 				sendCreateMessages(clientID, pos); 
 //				sendWantsDetailsMessages(clientID); 
 			} 

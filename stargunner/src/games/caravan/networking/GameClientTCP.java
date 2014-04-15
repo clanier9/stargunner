@@ -60,14 +60,14 @@ public class GameClientTCP extends GameConnectionClient
 				// format: create, remoteId, x,y,z or dsfr, remoteId, x,y,z 
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				// extract ghost x,y,z, position from message, then: 
-				Point3D ghostPosition = new Point3D(Integer.parseInt(msgTokens[2]), Integer.parseInt(msgTokens[3]), Integer.parseInt(msgTokens[4])); 
+				Point3D ghostPosition = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4])); 
 				createGhostAvatar(ghostID, ghostPosition); 
 			} 
 			if(msgTokens[0].compareTo("move") == 0) // receive “move” 
 			{ 
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				// extract ghost x,y,z, position from message, then: 
-				Point3D ghostPosition = new Point3D(Integer.parseInt(msgTokens[2]), Integer.parseInt(msgTokens[3]), Integer.parseInt(msgTokens[4]));
+				Point3D ghostPosition = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4]));
 				moveGhostAvatar(ghostID, ghostPosition);
 			} 
 			if (msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
