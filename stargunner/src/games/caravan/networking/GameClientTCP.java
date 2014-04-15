@@ -72,13 +72,26 @@ public class GameClientTCP extends GameConnectionClient
 			} 
 			if (msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
 			{
+				boolean exists = false;
 				// format: dsfr, remoteId, x,y,z 
-				UUID ghostID = UUID.fromString(msgTokens[1]); 
-				//TODO what to do with details
+				UUID ghostID = UUID.fromString(msgTokens[1]);
+				Point3D location = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4]));
+				for (int i=0; i<ghostAvatars.size(); i++) {
+					if (ghostID == ghostAvatars.get(i).getId()) {
+						ghostAvatars.get(i).setLocation(location);
+						exists = true;
+						break;
+					}
+				}
+				if (!exists) {
+					createGhostAvatar(ghostID, location);
+				}
 			} 
-			if(msgTokens[0].compareTo("wsds") == 0) // receive “wants…” 
+			if(msgTokens[0].compareTo("wsds") == 0) // receive “wants details” 
 			{ 
-				//TODO what details to send back to server
+				Point3D pos = game.getPlayerPosition();
+				UUID remID = UUID.fromString(msgTokens[1]);
+				sendDetailsForMessage(remID, pos);
 			} 
 		}
 	} 
@@ -150,9 +163,17 @@ public class GameClientTCP extends GameConnectionClient
 		}
 	} 
 	
-	public void sendDetailsForMessage(UUID remId, Vector3D pos) 
+	public void sendDetailsForMessage(UUID remId, Point3D pos) 
 	{
-		
+		try 
+		{ 
+			String message = new String("dsfr," + id + "," + remId); 
+			sendPacket(message); 
+		} 
+		catch (IOException e) 
+		{ 
+			e.printStackTrace();
+		}
 	}
 	
 	public void sendMoveMessage(Vector3D pos) 

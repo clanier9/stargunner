@@ -62,12 +62,15 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 				UUID clientID = UUID.fromString(msgTokens[1]); 
 				Point3D pos = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4])); 
 				sendCreateMessages(clientID, pos); 
-//				sendWantsDetailsMessages(clientID); 
+				sendWantsDetailsMessages(clientID); 
 			} 
 		
 			if(msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
 			{ 
-				 
+				UUID clientID = UUID.fromString(msgTokens[1]);
+				UUID remID = UUID.fromString(msgTokens[2]); 
+				Point3D pos = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4])); 
+				sendDetailsMessage(clientID, remID, pos); 
 			}
 		
 			if(msgTokens[0].compareTo("move") == 0) // receive “move” 
@@ -99,25 +102,46 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 		// format: create, remoteId, x, y, z 
 		try 
 		{ 
-			String message = new String("create," + clientID.toString()); 
+			String message = new String("create," + clientID); 
 			message += "," + position.getX(); 
 			message += "," + position.getY(); 
 			message += "," + position.getZ(); 
 			forwardPacketToAll(message, clientID); 
 			System.out.println("create message sent to the client");
 		} 
-		catch (IOException e) 
+		catch (IOException e)                                                                                                                                                                                                                                                                                 
 		{ 
 			e.printStackTrace(); 
 		} 
 	} 
 	 
-	public void sndDetailsMsg(UUID clientID, UUID remoteId, String[] position) 
-	{  } 
+	public void sendDetailsMessage(UUID clientID, UUID remoteId, Point3D position) 
+	{ 
+		try 
+		{ 
+			String message = new String("dsfr," + remoteId);
+			message += "," + position.getX(); 
+			message += "," + position.getY(); 
+			message += "," + position.getZ(); 
+			sendPacket(message, clientID);
+		} 
+		catch (IOException e) 
+		{ 
+			e.printStackTrace();
+		}
+	} 
 	 
 	public void sendWantsDetailsMessages(UUID clientID) 
 	{  
-		
+		try 
+		{ 
+			String message = new String("wsds," + clientID); 
+			forwardPacketToAll(message, clientID); 
+		} 
+		catch (IOException e) 
+		{ 
+			e.printStackTrace();
+		}
 	} 
 	 
 	public void sendMoveMessages(UUID clientID, String[] position) 
