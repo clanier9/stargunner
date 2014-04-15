@@ -85,6 +85,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 			if (success) message += "success"; 
 			else message += "failure"; 
 			sendPacket(message, clientID); 
+			System.out.println("join sent to client");
 		} 
 		catch (IOException e) 
 		{ 

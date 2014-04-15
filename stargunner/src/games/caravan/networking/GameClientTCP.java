@@ -26,8 +26,9 @@ public class GameClientTCP extends GameConnectionClient
 		this.ghostAvatars = new Vector<GhostAvatar>(); 
 	} 
 	
-	protected void processPacket (Object msg) // override 
+	protected void processPacket(Object msg) // override 
 	{ 
+		System.out.println("a packet was received");
 		// extract incoming message into substrings. Then process: 
 		String message = (String) msg; 
 		String[] msgTokens = message.split(","); 
@@ -44,7 +45,7 @@ public class GameClientTCP extends GameConnectionClient
 					sendCreateMessage(game.getPlayerPosition()); 
 					System.out.println("Connected successfully!"); 
 				} 
-				if(msgTokens[1].compareTo("failure") == 0) 
+				else if(msgTokens[1].compareTo("failure") == 0) 
 					game.setConnected(false); 
 			} 
 			if(msgTokens[0].compareTo("bye") == 0) // receive “bye” 
@@ -55,6 +56,7 @@ public class GameClientTCP extends GameConnectionClient
 			} 
 			if(msgTokens[0].compareTo("create") == 0) // receive “create…” 
 			{  
+				System.out.println("create message received!"); 
 				// format: create, remoteId, x,y,z or dsfr, remoteId, x,y,z 
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				// extract ghost x,y,z, position from message, then: 
@@ -84,6 +86,7 @@ public class GameClientTCP extends GameConnectionClient
 	private void createGhostAvatar(UUID ghostID, Point3D ghostPosition) {
 		GhostAvatar p2 = game.new GhostAvatar(ghostID, ghostPosition);
 		ghostAvatars.add(p2);
+		game.addGameWorldObject(p2);
 	}
 
 	private void removeGhostAvatar(UUID ghostID) {

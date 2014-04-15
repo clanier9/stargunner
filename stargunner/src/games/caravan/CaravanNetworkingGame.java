@@ -1,6 +1,7 @@
 package games.caravan;
 
 import games.caravan.character.Bullet;
+import games.caravan.character.RegularShip;
 import games.caravan.character.Ship;
 import games.caravan.networking.GameClientTCP;
 import graphicslib3D.Point3D;
@@ -11,6 +12,7 @@ import java.net.UnknownHostException;
 import java.util.UUID;
 
 import sage.networking.IGameConnection.ProtocolType;
+import sage.scene.SceneNode;
 
 public class CaravanNetworkingGame extends CaravanGame 
 { 
@@ -72,7 +74,7 @@ public class CaravanNetworkingGame extends CaravanGame
 		} 
 	} 	
 	
-	public class GhostAvatar extends Ship
+	public class GhostAvatar extends RegularShip
 	{
 //		Ship p1;
 		
@@ -103,6 +105,10 @@ public class CaravanNetworkingGame extends CaravanGame
 
 	public Point3D getPlayerPosition() {
 		return getPlayer().getLocation();
+	}
+	
+	public void addGameWorldObject(SceneNode s) {
+		super.addGameWorldObject(s);
 	}
 }
 
