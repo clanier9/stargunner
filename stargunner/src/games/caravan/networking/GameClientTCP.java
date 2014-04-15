@@ -84,7 +84,7 @@ public class GameClientTCP extends GameConnectionClient
 						break;
 					}
 				}
-				if (!exists) {
+				if (!exists && ghostID != id) {
 					createGhostAvatar(ghostID, location);
 				}
 			} 
