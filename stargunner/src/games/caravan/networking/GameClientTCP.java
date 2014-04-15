@@ -182,6 +182,14 @@ public class GameClientTCP extends GameConnectionClient
 	
 	public void sendMoveMessage(Vector3D pos) 
 	{
-		
+		try 
+		{ 
+			String message = new String("move," + id.toString()); 
+			sendPacket(message); 
+		} 
+		catch (IOException e) 
+		{ 
+			e.printStackTrace();
+		}
 	}
 }

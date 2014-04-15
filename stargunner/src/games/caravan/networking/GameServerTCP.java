@@ -146,8 +146,21 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 		}
 	} 
 	 
-	public void sendMoveMessages(UUID clientID, String[] position) 
-	{  } 
+	public void sendMoveMessages(UUID clientID, Point3D position) 
+	{  
+		try 
+		{ 
+			String message = new String("move,"); 
+			message += "," + position.getX(); 
+			message += "," + position.getY(); 
+			message += "," + position.getZ();
+			forwardPacketToAll(message, clientID); 
+		} 
+		catch (IOException e) 
+		{ 
+			e.printStackTrace();
+		}
+	} 
 	  
 	public void sendByeMessages(UUID clientID) 
 	{  
