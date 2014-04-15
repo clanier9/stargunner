@@ -11,8 +11,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import javax.swing.JOptionPane;
-
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Event;
@@ -48,6 +46,8 @@ public class CaravanGame extends BaseGame {
 	private int score;
 	private int score2;
 	private float time;
+	
+	private int rank;
 	
 
 	private HUDString scoreString;

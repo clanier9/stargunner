@@ -13,14 +13,14 @@ public class Starter {
 	@SuppressWarnings("resource")
 	public static void main(String[] args) throws IOException 
 	{
-		System.out.print("1 or 2 players for this game?  ");
+	//	System.out.print("1 or 2 players for this game?  ");
 		Scanner s = new Scanner(System.in);
-		int numPlayers = s.nextInt();
+	/*	int numPlayers = s.nextInt();
 		if (numPlayers == 1) {
 			CaravanGame t = new CaravanGame();
 			t.start();
 		}
-		else if (numPlayers == 2) {
+		else if (numPlayers == 2) {*/
 			System.out.print("Are you going to host this game?  ");
 			String str = s.nextLine();
 			if (str.charAt(0) == 'y') {
@@ -49,9 +49,9 @@ public class Starter {
 				System.exit(0);
 			}
 		}
-		else {
-			System.out.println("Invalid input. Exiting...");
-			System.exit(0);
-		}
+	//	else {
+		//	System.out.println("Invalid input. Exiting...");
+			//System.exit(0);
+		//}
 	}
-}
+//}
