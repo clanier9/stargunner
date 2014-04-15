@@ -28,7 +28,6 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 		{ 
 			if(messageTokens[0].compareTo("join") == 0) // received “join” 
 			{ 
-				System.out.println("join received");
 				// format: join,localid 
 				UUID clientID = UUID.fromString(messageTokens[1]); 
 				addClient(ci, clientID);  
@@ -58,7 +57,6 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 	 
 			if(msgTokens[0].compareTo("create") == 0) // receive “create” 
 			{ // format: create,localid,x,y,z 
-				System.out.println("a create message was received from the client");
 				UUID clientID = UUID.fromString(msgTokens[1]); 
 				Point3D pos = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4])); 
 				sendCreateMessages(clientID, pos); 
@@ -91,7 +89,6 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 			if (success) message += "success"; 
 			else message += "failure"; 
 			sendPacket(message, clientID); 
-			System.out.println("join sent to client");
 		} 
 		catch (IOException e) 
 		{ 
@@ -104,12 +101,11 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 		// format: create, remoteId, x, y, z 
 		try 
 		{ 
-			String message = new String("create," + clientID); 
+			String message = new String("create," + clientID.toString()); 
 			message += "," + position.getX(); 
 			message += "," + position.getY(); 
 			message += "," + position.getZ(); 
 			forwardPacketToAll(message, clientID); 
-			System.out.println("create message sent to the client");
 		} 
 		catch (IOException e)                                                                                                                                                                                                                                                                                 
 		{ 
@@ -121,7 +117,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 	{ 
 		try 
 		{ 
-			String message = new String("dsfr," + remoteId);
+			String message = new String("dsfr," + remoteId.toString());
 			message += "," + position.getX(); 
 			message += "," + position.getY(); 
 			message += "," + position.getZ(); 
@@ -137,7 +133,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 	{  
 		try 
 		{ 
-			String message = new String("wsds," + clientID); 
+			String message = new String("wsds," + clientID.toString()); 
 			forwardPacketToAll(message, clientID); 
 		} 
 		catch (IOException e) 
@@ -150,7 +146,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 	{  
 		try 
 		{ 
-			String message = new String("move," + clientID); 
+			String message = new String("move," + clientID.toString()); 
 			message += "," + position.getX(); 
 			message += "," + position.getY(); 
 			message += "," + position.getZ();
@@ -166,7 +162,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 	{  
 		try 
 		{ 
-			String message = new String("bye," + clientID); 
+			String message = new String("bye," + clientID.toString()); 
 			forwardPacketToAll(message, clientID); 
 		} 
 		catch (IOException e) 

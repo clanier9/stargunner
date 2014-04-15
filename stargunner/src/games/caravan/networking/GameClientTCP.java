@@ -126,7 +126,7 @@ public class GameClientTCP extends GameConnectionClient
 		// format: (create, localId, x,y,z) 
 		try 
 		{ 
-			String message = new String("create," + id); 
+			String message = new String("create," + id.toString()); 
 			message += "," + pos.getX()+"," + pos.getY() + "," + pos.getZ(); 
 			sendPacket(message); 
 			System.out.println("a create message was sent to server");
@@ -142,7 +142,7 @@ public class GameClientTCP extends GameConnectionClient
 		// format: join, localId 
 		try 
 		{ 
-			sendPacket(new String("join," + id));
+			sendPacket(new String("join," + id.toString()));
 		}
 		catch (IOException e) 
 		{ 
@@ -155,7 +155,7 @@ public class GameClientTCP extends GameConnectionClient
 	{  
 		try 
 		{ 
-			String message = new String("bye," + id); 
+			String message = new String("bye," + id.toString()); 
 			sendPacket(message); 
 		} 
 		catch (IOException e) 
@@ -168,7 +168,7 @@ public class GameClientTCP extends GameConnectionClient
 	{
 		try 
 		{ 
-			String message = new String("dsfr," + id + "," + remId);
+			String message = new String("dsfr," + id.toString() + "," + remId.toString());
 			message += "," + pos.getX(); 
 			message += "," + pos.getY(); 
 			message += "," + pos.getZ(); 
@@ -184,7 +184,7 @@ public class GameClientTCP extends GameConnectionClient
 	{
 		try 
 		{ 
-			String message = new String("move," + id); 
+			String message = new String("move," + id.toString()); 
 			message += "," + pos.getX(); 
 			message += "," + pos.getY(); 
 			message += "," + pos.getZ(); 
