@@ -36,14 +36,12 @@ public class GameClientTCP extends GameConnectionClient
 		{ 		
 			if(msgTokens[0].compareTo("join") == 0) 
 			{
-				System.out.println("a join message was received");
 				// receive “join” 
 				// format: join, success or join, failure 			
 				if(msgTokens[1].compareTo("success") == 0) 
 				{ 
 					game.setConnected(true); 
 					sendCreateMessage(game.getPlayerPosition()); 
-					System.out.println("Connected successfully!"); 
 				} 
 				else if(msgTokens[1].compareTo("failure") == 0) 
 					game.setConnected(false); 
@@ -56,12 +54,13 @@ public class GameClientTCP extends GameConnectionClient
 			} 
 			if(msgTokens[0].compareTo("create") == 0) // receive “create…” 
 			{  
-				System.out.println("create message received from the server!"); 
 				// format: create, remoteId, x,y,z or dsfr, remoteId, x,y,z 
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				// extract ghost x,y,z, position from message, then: 
 				Point3D ghostPosition = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4])); 
-				createGhostAvatar(ghostID, ghostPosition); 
+				if (ghost==null){
+					createGhostAvatar(ghostID, ghostPosition);
+				}
 			} 
 			if(msgTokens[0].compareTo("move") == 0) // receive “move” 
 			{ 
@@ -86,7 +85,7 @@ public class GameClientTCP extends GameConnectionClient
 //				if (!exists) {
 //					createGhostAvatar(ghostID, location);
 //				}
-				if (ghostID != this.id){
+				if (ghost==null){
 					createGhostAvatar(ghostID, location);
 				}
 				
@@ -135,7 +134,6 @@ public class GameClientTCP extends GameConnectionClient
 			String message = new String("create," + id.toString()); 
 			message += "," + pos.getX()+"," + pos.getY() + "," + pos.getZ(); 
 			sendPacket(message); 
-			System.out.println("a create message was sent to server");
 		} 
 		catch (IOException e) 
 		{ 
