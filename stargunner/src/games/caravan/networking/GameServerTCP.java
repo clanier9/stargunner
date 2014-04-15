@@ -60,7 +60,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 				UUID clientID = UUID.fromString(msgTokens[1]); 
 				Point3D pos = new Point3D(Integer.parseInt(msgTokens[2]), Integer.parseInt(msgTokens[3]), Integer.parseInt(msgTokens[4])); 
 				sendCreateMessages(clientID, pos); 
-				sendWantsDetailsMessages(clientID); 
+//				sendWantsDetailsMessages(clientID); 
 			} 
 		
 			if(msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
@@ -112,12 +112,24 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 	{  } 
 	 
 	public void sendWantsDetailsMessages(UUID clientID) 
-	{  } 
+	{  
+		
+	} 
 	 
 	public void sendMoveMessages(UUID clientID, String[] position) 
 	{  } 
 	  
 	public void sendByeMessages(UUID clientID) 
-	{  }
+	{  
+		try 
+		{ 
+			String message = new String("bye," + clientID); 
+			forwardPacketToAll(message, clientID); 
+		} 
+		catch (IOException e) 
+		{ 
+			e.printStackTrace();
+		}
+	}
 }
 

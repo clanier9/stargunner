@@ -1,6 +1,5 @@
 package games.caravan;
 
-import gameEngine.character.BaseCharacter;
 import games.caravan.character.Bullet;
 import games.caravan.character.Ship;
 import games.caravan.networking.GameClientTCP;
@@ -75,6 +74,8 @@ public class CaravanNetworkingGame extends CaravanGame
 	
 	public class GhostAvatar extends Ship
 	{
+//		Ship p1;
+		
 		public GhostAvatar(UUID ghostID, Point3D ghostPosition) {
 			id=ghostID;
 			setLocation(ghostPosition);
@@ -84,6 +85,10 @@ public class CaravanNetworkingGame extends CaravanGame
 		public Bullet[] fire() {
 			// TODO Auto-generated method stub
 			return null;
+		}
+
+		public void move(Point3D ghostPosition) {
+			getPlayer().setLocation(ghostPosition);
 		}
 
 	}

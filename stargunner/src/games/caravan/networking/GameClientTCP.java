@@ -53,12 +53,6 @@ public class GameClientTCP extends GameConnectionClient
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				removeGhostAvatar(ghostID); 
 			} 
-			if (msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
-			{
-				// format: dsfr, remoteId, x,y,z 
-				UUID ghostID = UUID.fromString(msgTokens[1]); 
-				//TODO what to do with details
-			} 
 			if(msgTokens[0].compareTo("create") == 0) // receive “create…” 
 			{  
 				// format: create, remoteId, x,y,z or dsfr, remoteId, x,y,z 
@@ -67,17 +61,26 @@ public class GameClientTCP extends GameConnectionClient
 				Point3D ghostPosition = new Point3D(Integer.parseInt(msgTokens[2]), Integer.parseInt(msgTokens[3]), Integer.parseInt(msgTokens[4])); 
 				createGhostAvatar(ghostID, ghostPosition); 
 			} 
+			if(msgTokens[0].compareTo("move") == 0) // receive “move” 
+			{ 
+				UUID ghostID = UUID.fromString(msgTokens[1]); 
+				// extract ghost x,y,z, position from message, then: 
+				Point3D ghostPosition = new Point3D(Integer.parseInt(msgTokens[2]), Integer.parseInt(msgTokens[3]), Integer.parseInt(msgTokens[4]));
+				moveGhostAvatar(ghostID, ghostPosition);
+			} 
+			if (msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
+			{
+				// format: dsfr, remoteId, x,y,z 
+				UUID ghostID = UUID.fromString(msgTokens[1]); 
+				//TODO what to do with details
+			} 
 			if(msgTokens[0].compareTo("wsds") == 0) // receive “wants…” 
 			{ 
 				//TODO what details to send back to server
 			} 
-			if(msgTokens[0].compareTo("move") == 0) // receive “move” 
-			{ 
-				//TODO move ghost
-			} 
 		}
 	} 
-		
+
 	private void createGhostAvatar(UUID ghostID, Point3D ghostPosition) {
 		GhostAvatar p2 = game.new GhostAvatar(ghostID, ghostPosition);
 		ghostAvatars.add(p2);
@@ -90,6 +93,15 @@ public class GameClientTCP extends GameConnectionClient
 				break;
 			}
 		}		
+	}
+	
+	private void moveGhostAvatar(UUID ghostID, Point3D ghostPosition) {
+		for (int i=0; i<ghostAvatars.size(); i++) {
+			if (ghostID == ghostAvatars.get(i).getId()) {
+				ghostAvatars.get(i).move(ghostPosition);
+				break;
+			}
+		}	
 	}
 
 	public void sendCreateMessage(Point3D pos) 
@@ -122,7 +134,17 @@ public class GameClientTCP extends GameConnectionClient
 	 
 	
 	public void sendByeMessage() 
-	{  } 
+	{  
+		try 
+		{ 
+			String message = new String("bye," + id.toString()); 
+			sendPacket(message); 
+		} 
+		catch (IOException e) 
+		{ 
+			e.printStackTrace();
+		}
+	} 
 	
 	public void sendDetailsForMessage(UUID remId, Vector3D pos) 
 	{
