@@ -93,6 +93,10 @@ public class CaravanNetworkingGame extends CaravanGame
 	public void addGameWorldObject(SceneNode s) {
 		super.addGameWorldObject(s);
 	}
+	
+	public boolean removeGameWorldObject(SceneNode s) {
+		return super.removeGameWorldObject(s);
+	}
 }
 	
 //	public class GhostAvatar extends RegularShip

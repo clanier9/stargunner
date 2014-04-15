@@ -16,14 +16,14 @@ public class GameClientTCP extends GameConnectionClient
 { 
 	private CaravanNetworkingGame game; 
 	private UUID id; 
-	private Vector<GhostAvatar> ghostAvatars;
+	private GhostAvatar ghost;
  
 	public GameClientTCP(InetAddress remAddr, int remPort, ProtocolType pType, CaravanNetworkingGame game) throws IOException 
 	{ 
 		super(remAddr, remPort, pType); 
 		this.game = game; 
 		this.id = UUID.randomUUID(); 
-		this.ghostAvatars = new Vector<GhostAvatar>(); 
+//		this.ghostAvatars = new Vector<GhostAvatar>(); 
 	} 
 	
 	protected void processPacket(Object msg) // override 
@@ -76,16 +76,20 @@ public class GameClientTCP extends GameConnectionClient
 				// format: dsfr, remoteId, x,y,z 
 				UUID ghostID = UUID.fromString(msgTokens[1]);
 				Point3D location = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4]));
-				for (int i=0; i<ghostAvatars.size(); i++) {
-					if (ghostID == ghostAvatars.get(i).getId()) {
-						ghostAvatars.get(i).setLocation(location);
-						exists = true;
-						break;
-					}
-				}
-				if (!exists) {
+//				for (int i=0; i<ghostAvatars.size(); i++) {
+//					if (ghostID == ghostAvatars.get(i).getId()) {
+//						ghostAvatars.get(i).setLocation(location);
+//						exists = true;
+//						break;
+//					}
+//				}
+//				if (!exists) {
+//					createGhostAvatar(ghostID, location);
+//				}
+				if (ghostID != this.id){
 					createGhostAvatar(ghostID, location);
 				}
+				
 			} 
 			if(msgTokens[0].compareTo("wsds") == 0) // receive “wants details” 
 			{ 
@@ -97,27 +101,30 @@ public class GameClientTCP extends GameConnectionClient
 	} 
 
 	private void createGhostAvatar(UUID ghostID, Point3D ghostPosition) {
-		GhostAvatar p2 = new GhostAvatar(ghostID, ghostPosition);
-		ghostAvatars.add(p2);
-		game.addGameWorldObject(p2);
+		ghost = new GhostAvatar(ghostID, ghostPosition);
+//		ghostAvatars.add(p2);
+		game.addGameWorldObject(ghost);
 	}
 
 	private void removeGhostAvatar(UUID ghostID) {
-		for (int i=0; i<ghostAvatars.size(); i++) {
-			if (ghostID == ghostAvatars.get(i).getId()) {
-				ghostAvatars.remove(i);
-				break;
-			}
-		}		
+//		for (int i=0; i<ghostAvatars.size(); i++) {
+//			if (ghostID == ghostAvatars.get(i).getId()) {
+//				ghostAvatars.remove(i);
+//				break;
+//			}
+//		}	
+		game.removeGameWorldObject(ghost);
+		ghost = null;		
 	}
 	
 	private void moveGhostAvatar(UUID ghostID, Point3D ghostPosition) {
-		for (int i=0; i<ghostAvatars.size(); i++) {
-			if (ghostID == ghostAvatars.get(i).getId()) {
-				ghostAvatars.get(i).move(ghostPosition);
-				break;
-			}
-		}	
+//		for (int i=0; i<ghostAvatars.size(); i++) {
+//			if (ghostID == ghostAvatars.get(i).getId()) {
+//				ghostAvatars.get(i).move(ghostPosition);
+//				break;
+//			}
+//		}	
+		ghost.move(ghostPosition);
 	}
 
 	public void sendCreateMessage(Point3D pos) 
