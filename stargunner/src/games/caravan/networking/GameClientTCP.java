@@ -50,7 +50,6 @@ public class GameClientTCP extends GameConnectionClient
 				// format: bye, remoteId 
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				removeGhostAvatar(ghostID); 
-				game=null;
 			} 
 			if(msgTokens[0].compareTo("create") == 0) // receive “create…” 
 			{  
