@@ -53,8 +53,11 @@ public class CaravanNetworkingGame extends CaravanGame
 	protected void update(float time) 
 	{ 
 		// same as before, plus process any packets received from server 
-	 	if (thisClient != null) thisClient.processPackets(); 
-	 	thisClient.sendMoveMessage(getPlayerPosition());
+	 	if (thisClient != null) {
+	 		thisClient.processPackets(); 
+	 		thisClient.sendMoveMessage(getPlayerPosition());
+	 	}
+	 	
 	 	super.update(time);
 	} 
 	
@@ -75,26 +78,6 @@ public class CaravanNetworkingGame extends CaravanGame
 		} 
 	} 	
 	
-	public class GhostAvatar extends RegularShip
-	{
-//		Ship p1;
-		
-		public GhostAvatar(UUID ghostID, Point3D ghostPosition) {
-			id=ghostID;
-			setLocation(ghostPosition);
-		}
-		
-		@Override
-		public Bullet[] fire() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public void move(Point3D ghostPosition) {
-			setLocation(ghostPosition);
-		}
-	}
-
 	public void setConnected(boolean b) {
 		connected = b;
 	}
@@ -111,4 +94,25 @@ public class CaravanNetworkingGame extends CaravanGame
 		super.addGameWorldObject(s);
 	}
 }
+	
+//	public class GhostAvatar extends RegularShip
+//	{
+////		Ship p1;
+//		
+//		public GhostAvatar(UUID ghostID, Point3D ghostPosition) {
+//			id=ghostID;
+//			setLocation(ghostPosition);
+//		}
+//		
+//		@Override
+//		public Bullet[] fire() {
+//			// TODO Auto-generated method stub
+//			return null;
+//		}
+//
+//		public void move(Point3D ghostPosition) {
+//			setLocation(ghostPosition);
+//		}
+//	}
+//}
 

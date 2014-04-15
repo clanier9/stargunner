@@ -1,7 +1,7 @@
 package games.caravan.networking;
 
 import games.caravan.CaravanNetworkingGame;
-import games.caravan.CaravanNetworkingGame.GhostAvatar;
+import games.caravan.character.GhostAvatar;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
 
@@ -97,7 +97,7 @@ public class GameClientTCP extends GameConnectionClient
 	} 
 
 	private void createGhostAvatar(UUID ghostID, Point3D ghostPosition) {
-		GhostAvatar p2 = game.new GhostAvatar(ghostID, ghostPosition);
+		GhostAvatar p2 = new GhostAvatar(ghostID, ghostPosition);
 		ghostAvatars.add(p2);
 		game.addGameWorldObject(p2);
 	}
