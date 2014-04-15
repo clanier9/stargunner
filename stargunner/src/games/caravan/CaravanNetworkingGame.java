@@ -54,6 +54,7 @@ public class CaravanNetworkingGame extends CaravanGame
 	{ 
 		// same as before, plus process any packets received from server 
 	 	if (thisClient != null) thisClient.processPackets(); 
+	 	thisClient.sendMoveMessage(getPlayerPosition());
 	 	super.update(time);
 	} 
 	
@@ -92,7 +93,6 @@ public class CaravanNetworkingGame extends CaravanGame
 		public void move(Point3D ghostPosition) {
 			getPlayer().setLocation(ghostPosition);
 		}
-
 	}
 
 	public void setConnected(boolean b) {

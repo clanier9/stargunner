@@ -76,7 +76,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 			if(msgTokens[0].compareTo("move") == 0) // receive “move” 
 			{ 
 				UUID clientID = UUID.fromString(msgTokens[1]);
-				Point3D pos = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[2]));
+				Point3D pos = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4]));
 				sendMoveMessages(clientID, pos);
 			}
 		}

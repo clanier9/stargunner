@@ -180,7 +180,7 @@ public class GameClientTCP extends GameConnectionClient
 		}
 	}
 	
-	public void sendMoveMessage(Vector3D pos) 
+	public void sendMoveMessage(Point3D pos) 
 	{
 		try 
 		{ 
