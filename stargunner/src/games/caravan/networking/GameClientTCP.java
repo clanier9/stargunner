@@ -23,7 +23,6 @@ public class GameClientTCP extends GameConnectionClient
 		super(remAddr, remPort, pType); 
 		this.game = game; 
 		this.id = UUID.randomUUID(); 
-//		this.ghostAvatars = new Vector<GhostAvatar>(); 
 	} 
 	
 	protected void processPacket(Object msg) // override 
@@ -51,6 +50,7 @@ public class GameClientTCP extends GameConnectionClient
 				// format: bye, remoteId 
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				removeGhostAvatar(ghostID); 
+				game=null;
 			} 
 			if(msgTokens[0].compareTo("create") == 0) // receive “create…” 
 			{  
