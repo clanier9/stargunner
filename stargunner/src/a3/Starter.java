@@ -30,10 +30,10 @@ public class Starter {
 
 				String[] msgTokens = server.getLocalInetAddress().toString().split("/"); 
 				System.out.println(msgTokens[1]);
-				CaravanGame g = new CaravanGame();
-				g.start();
-//				CaravanNetworkingGame serverClient = new CaravanNetworkingGame(msgTokens[1], localPort);
-//				serverClient.start();
+//				CaravanGame g = new CaravanGame();
+//				g.start();
+				CaravanNetworkingGame serverClient = new CaravanNetworkingGame(msgTokens[1], localPort);
+				serverClient.start();
 			}
 			else if (str.charAt(0) == 'n') {
 				System.out.print("What is the server IP address?  ");

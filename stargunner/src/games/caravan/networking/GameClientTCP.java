@@ -28,7 +28,6 @@ public class GameClientTCP extends GameConnectionClient
 	
 	protected void processPacket(Object msg) // override 
 	{ 
-		System.out.println("a packet was received");
 		// extract incoming message into substrings. Then process: 
 		String message = (String) msg; 
 		System.out.println(msg);
@@ -38,6 +37,7 @@ public class GameClientTCP extends GameConnectionClient
 		{ 		
 			if(msgTokens[0].compareTo("join") == 0) 
 			{
+				System.out.println("a join message was received");
 				// receive “join” 
 				// format: join, success or join, failure 			
 				if(msgTokens[1].compareTo("success") == 0) 
@@ -57,7 +57,7 @@ public class GameClientTCP extends GameConnectionClient
 			} 
 			if(msgTokens[0].compareTo("create") == 0) // receive “create…” 
 			{  
-				System.out.println("create message received!"); 
+				System.out.println("create message received from the server!"); 
 				// format: create, remoteId, x,y,z or dsfr, remoteId, x,y,z 
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				// extract ghost x,y,z, position from message, then: 
@@ -116,6 +116,7 @@ public class GameClientTCP extends GameConnectionClient
 			String message = new String("create," + id.toString()); 
 			message += "," + pos.getX()+"," + pos.getY() + "," + pos.getZ(); 
 			sendPacket(message); 
+			System.out.println("a create message was sent to server");
 		} 
 		catch (IOException e) 
 		{ 

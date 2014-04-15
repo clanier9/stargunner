@@ -58,6 +58,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 	 
 			if(msgTokens[0].compareTo("create") == 0) // receive “create” 
 			{ // format: create,localid,x,y,z 
+				System.out.println("a create message was received from the client");
 				UUID clientID = UUID.fromString(msgTokens[1]); 
 				Point3D pos = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4])); 
 				sendCreateMessages(clientID, pos); 
@@ -103,6 +104,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 			message += "," + position.getY(); 
 			message += "," + position.getZ(); 
 			forwardPacketToAll(message, clientID); 
+			System.out.println("create message sent to the client");
 		} 
 		catch (IOException e) 
 		{ 
