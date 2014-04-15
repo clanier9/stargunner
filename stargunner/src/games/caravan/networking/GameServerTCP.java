@@ -31,7 +31,6 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 				System.out.println("join received");
 				// format: join,localid 
 				UUID clientID = UUID.fromString(messageTokens[1]); 
-				
 				addClient(ci, clientID);  
 				sendJoinedMessage(clientID, true);
 			} 
