@@ -13,24 +13,24 @@ public class Starter {
 	@SuppressWarnings("resource")
 	public static void main(String[] args) throws IOException 
 	{
-	//	System.out.print("1 or 2 players for this game?  ");
-		Scanner s = new Scanner(System.in);
 	/*	int numPlayers = s.nextInt();
 		if (numPlayers == 1) {
 			CaravanGame t = new CaravanGame();
 			t.start();
 		}
 		else if (numPlayers == 2) {*/
+		Scanner s = new Scanner(System.in);
+
 			System.out.print("Are you going to host this game?  ");
 			String str = s.nextLine();
 			if (str.charAt(0) == 'y') {
 				GameServerTCP server = new GameServerTCP(localPort);
 				server.getLocalInetAddress();
 				System.out.print("waiting for the client to connect to " + server.getLocalInetAddress() + " on port " + localPort + "...");
-				while (!server.isConnected()) {
-					//wait for client to connect
-				}
-				CaravanNetworkingGame serverClient = new CaravanNetworkingGame(server.getLocalInetAddress().toString(), localPort);
+
+				String[] msgTokens = server.getLocalInetAddress().toString().split("/"); 
+				System.out.println(msgTokens[1]);
+				CaravanNetworkingGame serverClient = new CaravanNetworkingGame(msgTokens[1], localPort);
 				serverClient.start();
 			}
 			else if (str.charAt(0) == 'n') {
@@ -38,20 +38,21 @@ public class Starter {
 				String serverIP = s.nextLine();
 //				System.out.print("What is the server port number?  ");
 //				int port = s.nextInt();
-				CaravanNetworkingGame client = new CaravanNetworkingGame(serverIP, localPort);
-				while (!client.isConnected()) {
-					//wait for the connection to finish
-				}			
+				CaravanNetworkingGame client = new CaravanNetworkingGame(serverIP, localPort);		
 				client.start();
 			}
 			else {
 				System.out.println("Invalid input. Exiting...");
 				System.exit(0);
 			}
-		}
-	//	else {
-		//	System.out.println("Invalid input. Exiting...");
-			//System.exit(0);
-		//}
-	}
+			
+	}}
+
+//		}
+//		else {
+//			System.out.println("Invalid input. Exiting...");
+//			System.exit(0);
+//		}
+
+	
 //}
