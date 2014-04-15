@@ -150,7 +150,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 	{  
 		try 
 		{ 
-			String message = new String("move,"); 
+			String message = new String("move," + clientID); 
 			message += "," + position.getX(); 
 			message += "," + position.getY(); 
 			message += "," + position.getZ();
