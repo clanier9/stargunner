@@ -62,10 +62,7 @@ public class GameClientTCP extends GameConnectionClient
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				// extract ghost x,y,z, position from message, then: 
 				Point3D ghostPosition = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4])); 
-				if (ghostID != id) {
-					createGhostAvatar(ghostID, ghostPosition);
-				}
-				 
+				createGhostAvatar(ghostID, ghostPosition); 
 			} 
 			if(msgTokens[0].compareTo("move") == 0) // receive “move” 
 			{ 
