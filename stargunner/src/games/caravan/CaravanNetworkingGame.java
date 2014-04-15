@@ -1,25 +1,28 @@
 package games.caravan;
 
 import gameEngine.character.BaseCharacter;
-import gameEngine.networking.MyClient;
+import games.caravan.character.Bullet;
+import games.caravan.character.Ship;
+import games.caravan.networking.GameClientTCP;
 import graphicslib3D.Point3D;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.UUID;
 
 import sage.networking.IGameConnection.ProtocolType;
 
-public class MyNetworkingClient extends CaravanGame 
+public class CaravanNetworkingGame extends CaravanGame 
 { 
 	private String serverAddress;
 	private int serverPort;
 	private ProtocolType serverProtocol;
-	private MyClient thisClient;
+	private GameClientTCP thisClient;
 	private boolean connected;
 
 	// assumes main() gets address/port from command line 
-	public MyNetworkingClient(String serverAddr, int sPort) 
+	public CaravanNetworkingGame(String serverAddr, int sPort) 
 	{ 
 		super(); 
 		this.serverAddress = serverAddr; 
@@ -32,7 +35,7 @@ public class MyNetworkingClient extends CaravanGame
 		// items as before, plus initializing network: 
 		try 
 		{ 
-			thisClient = new MyClient(InetAddress.getByName(serverAddress), serverPort, serverProtocol, this); 
+			thisClient = new GameClientTCP(InetAddress.getByName(serverAddress), serverPort, serverProtocol, this); 
 		} 
 		catch (UnknownHostException e) 
 		{ 
@@ -70,8 +73,18 @@ public class MyNetworkingClient extends CaravanGame
 		} 
 	} 	
 	
-	public class GhostAvatar extends BaseCharacter
+	public class GhostAvatar extends Ship
 	{
+		public GhostAvatar(UUID ghostID, Point3D ghostPosition) {
+			id=ghostID;
+			setLocation(ghostPosition);
+		}
+		
+		@Override
+		public Bullet[] fire() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 	}
 

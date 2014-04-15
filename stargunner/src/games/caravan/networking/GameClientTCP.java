@@ -1,7 +1,7 @@
-package gameEngine.networking;
+package games.caravan.networking;
 
-import games.caravan.MyNetworkingClient;
-import games.caravan.MyNetworkingClient.GhostAvatar;
+import games.caravan.CaravanNetworkingGame;
+import games.caravan.CaravanNetworkingGame.GhostAvatar;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
 
@@ -12,13 +12,13 @@ import java.util.Vector;
 
 import sage.networking.client.GameConnectionClient;
 
-public class MyClient extends GameConnectionClient 
+public class GameClientTCP extends GameConnectionClient 
 { 
-	private MyNetworkingClient game; 
+	private CaravanNetworkingGame game; 
 	private UUID id; 
 	private Vector<GhostAvatar> ghostAvatars;
  
-	public MyClient(InetAddress remAddr, int remPort, ProtocolType pType, MyNetworkingClient game) throws IOException 
+	public GameClientTCP(InetAddress remAddr, int remPort, ProtocolType pType, CaravanNetworkingGame game) throws IOException 
 	{ 
 		super(remAddr, remPort, pType); 
 		this.game = game; 
@@ -40,11 +40,9 @@ public class MyClient extends GameConnectionClient
 				// format: join, success or join, failure 			
 				if(msgTokens[1].compareTo("success") == 0) 
 				{ 
-					//game.setConnected(true); 
-					//sendCreateMessage(game.getPlayerPosition()); 
 					game.setConnected(true); 
-					System.out.println("Connected successfully!");
-//					sendCreateMessage(game.getPlayerPosition()); 
+					sendCreateMessage(game.getPlayerPosition()); 
+					System.out.println("Connected successfully!"); 
 				} 
 				if(msgTokens[1].compareTo("failure") == 0) 
 					game.setConnected(false); 
@@ -55,35 +53,43 @@ public class MyClient extends GameConnectionClient
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				removeGhostAvatar(ghostID); 
 			} 
-			if (msgTokens[0].compareTo("dsfr") == 0 ) 
+			if (msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
 			{
-				// receive “details for” 
+				// format: dsfr, remoteId, x,y,z 
+				UUID ghostID = UUID.fromString(msgTokens[1]); 
+				//TODO what to do with details
+			} 
+			if(msgTokens[0].compareTo("create") == 0) // receive “create…” 
+			{  
 				// format: create, remoteId, x,y,z or dsfr, remoteId, x,y,z 
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				// extract ghost x,y,z, position from message, then: 
-				UUID ghostPosition = UUID.fromString(msgTokens[1]); 
+				Point3D ghostPosition = new Point3D(Integer.parseInt(msgTokens[2]), Integer.parseInt(msgTokens[3]), Integer.parseInt(msgTokens[4])); 
 				createGhostAvatar(ghostID, ghostPosition); 
 			} 
-			if(msgTokens[0].compareTo("wsds") == 0) // receive “create…” 
-			{  } 
 			if(msgTokens[0].compareTo("wsds") == 0) // receive “wants…” 
-			{  } 
+			{ 
+				//TODO what details to send back to server
+			} 
 			if(msgTokens[0].compareTo("move") == 0) // receive “move” 
-			{  } 
+			{ 
+				//TODO move ghost
+			} 
 		}
 	} 
 		
-	private void createGhostAvatar(UUID ghostID, UUID ghostPosition) {
-		// TODO Auto-generated method stub
-		
+	private void createGhostAvatar(UUID ghostID, Point3D ghostPosition) {
+		GhostAvatar p2 = game.new GhostAvatar(ghostID, ghostPosition);
+		ghostAvatars.add(p2);
 	}
 
 	private void removeGhostAvatar(UUID ghostID) {
-		for (GhostAvatar gA : ghostAvatars) {
-			if (gA.getId()==ghostID) {
-				gA = null;
+		for (int i=0; i<ghostAvatars.size(); i++) {
+			if (ghostID == ghostAvatars.get(i).getId()) {
+				ghostAvatars.remove(i);
+				break;
 			}
-		}
+		}		
 	}
 
 	public void sendCreateMessage(Point3D pos) 

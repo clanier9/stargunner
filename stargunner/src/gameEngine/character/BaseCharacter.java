@@ -13,7 +13,7 @@ public class BaseCharacter extends TriMesh {
 	private Vector3D foward;
 	private Vector3D side;
 	private Vector3D up;
-	private UUID id;
+	protected UUID id;
 	private float speed;
 	
 	public BaseCharacter() {

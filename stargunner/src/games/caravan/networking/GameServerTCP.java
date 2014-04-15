@@ -1,9 +1,12 @@
-package gameEngine.networking;
+package games.caravan.networking;
+
+import graphicslib3D.Point3D;
 
 import java.io.IOException; 
 import java.net.InetAddress; 
 import java.util.UUID; 
  
+
 import sage.networking.server.GameConnectionServer; 
 import sage.networking.server.IClientInfo; 
 
@@ -16,7 +19,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 	 
 	public void acceptClient(IClientInfo ci, Object o) 
 	{ 
-		if (!getClients().isEmpty()) { return; } //only 1 other player allowed
+		if (getClients().size()==2) { return; } //only 2 players allowed
 		
 		String message = (String)o; 
 		String[] messageTokens = message.split(","); 
@@ -27,13 +30,13 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 			{ 
 				// format: join,localid 
 				UUID clientID = UUID.fromString(messageTokens[1]); 
-				addClient(ci, clientID); 
-				sendJoinedMessage(clientID, true); 
+				sendJoinedMessage(clientID, true);
+				addClient(ci, clientID);  
 			} 
 		} 
 	} 
 	
-	public boolean hasConnection() {
+	public boolean isConnected() {
 		return (!getClients().isEmpty());
 	}
 
@@ -55,7 +58,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 			if(msgTokens[0].compareTo("create") == 0) // receive “create” 
 			{ // format: create,localid,x,y,z 
 				UUID clientID = UUID.fromString(msgTokens[1]); 
-				String[] pos = {msgTokens[2], msgTokens[3], msgTokens[4]}; 
+				Point3D pos = new Point3D(Integer.parseInt(msgTokens[2]), Integer.parseInt(msgTokens[3]), Integer.parseInt(msgTokens[4])); 
 				sendCreateMessages(clientID, pos); 
 				sendWantsDetailsMessages(clientID); 
 			} 
@@ -78,7 +81,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 		try 
 		{ 
 			String message = new String("join,"); 
-			if(success) message += "success"; 
+			if (success) message += "success"; 
 			else message += "failure"; 
 			sendPacket(message, clientID); 
 		} 
@@ -88,15 +91,15 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 		}
 	} 
 	 
-	public void sendCreateMessages(UUID clientID, String[] position) 
+	public void sendCreateMessages(UUID clientID, Point3D position) 
 	{ 
 		// format: create, remoteId, x, y, z 
 		try 
 		{ 
 			String message = new String("create," + clientID.toString()); 
-			message += "," + position[0]; 
-			message += "," + position[1]; 
-			message += "," + position[2]; 
+			message += "," + position.getX(); 
+			message += "," + position.getY(); 
+			message += "," + position.getZ(); 
 			forwardPacketToAll(message, clientID); 
 		} 
 		catch (IOException e) 
