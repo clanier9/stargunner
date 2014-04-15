@@ -35,7 +35,7 @@ public class Starter {
 			}
 			else if (str.charAt(0) == 'n') {
 				System.out.print("What is the server IP address?  ");
-				String serverIP = s.nextLine();
+				String serverIP = kb.nextLine();
 				CaravanNetworkingGame client = new CaravanNetworkingGame(serverIP, localPort);		
 				client.start();
 			}

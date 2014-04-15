@@ -101,7 +101,8 @@ public class GameClientTCP extends GameConnectionClient
 	}
 	
 	private void moveGhostAvatar(UUID ghostID, Point3D ghostPosition) {	
-		ghost.move(ghostPosition);
+		if (ghost!=null) 
+			ghost.move(ghostPosition);
 	}
 
 	public void sendCreateMessage(Point3D pos) 
