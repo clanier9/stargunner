@@ -30,7 +30,6 @@ public class GameClientTCP extends GameConnectionClient
 	{ 
 		// extract incoming message into substrings. Then process: 
 		String message = (String) msg; 
-		System.out.println(msg);
 		String[] msgTokens = message.split(","); 
 	 
 		if(msgTokens.length > 0) 

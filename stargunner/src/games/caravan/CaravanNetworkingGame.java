@@ -91,7 +91,7 @@ public class CaravanNetworkingGame extends CaravanGame
 		}
 
 		public void move(Point3D ghostPosition) {
-			getPlayer().setLocation(ghostPosition);
+			setLocation(ghostPosition);
 		}
 	}
 
