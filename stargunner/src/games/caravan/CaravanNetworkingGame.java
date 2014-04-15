@@ -98,25 +98,4 @@ public class CaravanNetworkingGame extends CaravanGame
 		return super.removeGameWorldObject(s);
 	}
 }
-	
-//	public class GhostAvatar extends RegularShip
-//	{
-////		Ship p1;
-//		
-//		public GhostAvatar(UUID ghostID, Point3D ghostPosition) {
-//			id=ghostID;
-//			setLocation(ghostPosition);
-//		}
-//		
-//		@Override
-//		public Bullet[] fire() {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-//
-//		public void move(Point3D ghostPosition) {
-//			setLocation(ghostPosition);
-//		}
-//	}
-//}
 
