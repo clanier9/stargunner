@@ -185,6 +185,9 @@ public class GameClientTCP extends GameConnectionClient
 		try 
 		{ 
 			String message = new String("move," + id.toString()); 
+			message += "," + pos.getX(); 
+			message += "," + pos.getY(); 
+			message += "," + pos.getZ(); 
 			sendPacket(message); 
 		} 
 		catch (IOException e) 
