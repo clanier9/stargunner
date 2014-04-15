@@ -48,6 +48,7 @@ public class CaravanGame extends BaseGame {
 	private float time;
 	
 	private int rank;
+	private long fileLastModifiedTime = 0;
 	
 
 	private HUDString scoreString;
@@ -76,7 +77,7 @@ public class CaravanGame extends BaseGame {
 	private IEventManager eventMgr;
 	
 	private ScriptEngine engine; 
-	private String scriptName = "UpdateCharacter.js"; 
+	private String scriptName = "initPlayer.js"; 
 	private File scriptFile;
 	
 	public CaravanGame() {
@@ -219,13 +220,22 @@ public class CaravanGame extends BaseGame {
 	private void initPlayers() {
 		
 		p1 = new RegularShip(new Point3D(0,3,0));
-		executeScript(engine, scriptName);
+		//executeScript(engine, scriptName);
 		addGameWorldObject(p1);
 		
-		IAction lstrafe = new LeftAction(p1);
-		IAction rstrafe = new RightAction(p1);
-		IAction fwd = new FowardAction(p1);
-		IAction bck = new BackwardAction(p1);
+		setUpControls(p1);
+		
+		camera.setLocation(new Point3D(0,25,-23));
+		camera.lookAt(new Point3D(0,0,0), new Vector3D(0,1,0));
+		
+	}
+	
+	private void setUpControls(Ship p)
+	{
+		IAction lstrafe = new LeftAction(p);
+		IAction rstrafe = new RightAction(p);
+		IAction fwd = new FowardAction(p);
+		IAction bck = new BackwardAction(p);
 		
 		im.associateAction (
 				kbName, net.java.games.input.Component.Identifier.Key.UP,
@@ -242,10 +252,6 @@ public class CaravanGame extends BaseGame {
 		im.associateAction (
 				kbName, net.java.games.input.Component.Identifier.Key.RIGHT,
 				rstrafe, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
-		
-		camera.setLocation(new Point3D(0,25,-23));
-		camera.lookAt(new Point3D(0,0,0), new Vector3D(0,1,0));
-		
 	}
 
 	private void initGameObjects() {
@@ -264,6 +270,7 @@ public class CaravanGame extends BaseGame {
 		TerrainBlock t = initTerrain();
 		background = new Group();
 		background.addChild(t);
+		 
 		background.addController(scroller);
 		scroller.addControlledNode(background);
 		addGameWorldObject(background);
@@ -294,7 +301,7 @@ public class CaravanGame extends BaseGame {
 		return hillTerrain;
 	}
 	
-	private TerrainBlock createTerBlock(AbstractHeightMap heightMap)
+	private static TerrainBlock createTerBlock(AbstractHeightMap heightMap)
 	{ 
 		float heightScale = 0.05f;
 		Vector3D terrainScale = new Vector3D(1, heightScale, 1);
@@ -320,6 +327,18 @@ public class CaravanGame extends BaseGame {
 		Matrix3D camTranslation = new Matrix3D();
 		camTranslation.translate(camLoc.getX(), camLoc.getY(), camLoc.getZ());
 		sky.setLocalTranslation(camTranslation);
+		
+		long modTime = scriptFile.lastModified();
+		if (modTime > fileLastModifiedTime)
+		{
+		fileLastModifiedTime = modTime;
+		this.runScript();
+		removeGameWorldObject(p1);
+		p1 = (Ship) engine.get("p1");
+		setUpControls(p1);
+		addGameWorldObject(p1);
+		}
+		
 		super.update(elapsedTimeMS);
 	
 	}
@@ -375,5 +394,6 @@ public class CaravanGame extends BaseGame {
 			System.out.println ("Null ptr exception reading " + scriptFile + e3);
 		} 
 	}
+	
 
 }
