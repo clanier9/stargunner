@@ -12,9 +12,6 @@ import sage.networking.server.IClientInfo;
 
 public class GameServerTCP extends GameConnectionServer<UUID> 
 { 
-	
-	private int connected;
-
 	public GameServerTCP(int localPort) throws IOException 
 	{ 
 		super(localPort, ProtocolType.TCP);
@@ -38,10 +35,6 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 			} 
 		} 
 	} 
-	
-	public boolean isConnected() {
-		return (connected>1);
-	}
 
 	public void processPacket(Object o, InetAddress senderIP, int sndPort) 
 	{ 
@@ -60,6 +53,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 	 
 			else if(msgTokens[0].compareTo("create") == 0) // receive “create” 
 			{ // format: create,localid,x,y,z 
+				System.out.println("create message received from " + msgTokens[1]);
 				UUID clientID = UUID.fromString(msgTokens[1]); 
 				Point3D pos = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4])); 
 				sendCreateMessages(clientID, pos); 
@@ -68,6 +62,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 		
 			else if(msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
 			{ 
+				System.out.println("Server recieved details from " + msgTokens[1] + " for " + msgTokens[2]);
 				UUID clientID = UUID.fromString(msgTokens[1]);
 				UUID remID = UUID.fromString(msgTokens[2]); 
 				Point3D pos = new Point3D(Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4]), Double.parseDouble(msgTokens[5])); 
@@ -83,7 +78,8 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 			
 			else if(msgTokens[0].compareTo("ready") == 0) // receive “ready” 
 			{ 
-				connected++;
+				System.out.println("ready received to server from " + msgTokens[1]);
+				sendStartScrollingMessages();
 			}
 		}
 	}
@@ -109,6 +105,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 		// format: create, remoteId, x, y, z 
 		try 
 		{ 
+			System.out.println("create message sent to everyone except " + clientID.toString());
 			String message = new String("create," + clientID.toString()); 
 			message += "," + position.getX(); 
 			message += "," + position.getY(); 
@@ -125,11 +122,12 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 	{ 
 		try 
 		{ 
-			String message = new String("dsfr," + remoteId.toString());
+			String message = new String("dsfr," + clientID.toString());
 			message += "," + position.getX(); 
 			message += "," + position.getY(); 
 			message += "," + position.getZ(); 
-			sendPacket(message, clientID);
+			sendPacket(message, remoteId);
+			System.out.println("Server sent details to " + remoteId.toString() + " for " + clientID.toString());
 		} 
 		catch (IOException e) 
 		{ 

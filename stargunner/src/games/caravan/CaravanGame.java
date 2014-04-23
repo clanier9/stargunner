@@ -274,7 +274,7 @@ public class CaravanGame extends BaseGame {
 		addGameWorldObject(background);		
 	}
 	
-	protected void startScrolling() {
+	public void startScrolling() {
 		background.addController(scroller);
 		scroller.addControlledNode(background);
 	}

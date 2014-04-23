@@ -18,6 +18,7 @@ public class Starter {
 		if (numPlayers == 1) {
 			CaravanGame g = new CaravanGame();
 			g.start();
+			g.startScrolling();
 		}
 		else if (numPlayers == 2) {
 			Scanner kb = new Scanner(System.in);
@@ -31,10 +32,6 @@ public class Starter {
 				String[] msgTokens = server.getLocalInetAddress().toString().split("/"); 				
 				CaravanNetworkingGame serverClient = new CaravanNetworkingGame(msgTokens[1], localPort);		
 				serverClient.start();
-				while (!server.isConnected()) {
-					
-				}
-				server.sendStartScrollingMessages();
 			}
 			else if (str.charAt(0) == 'n') {
 				System.out.print("What is the server IP address?  ");

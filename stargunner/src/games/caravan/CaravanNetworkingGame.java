@@ -59,6 +59,7 @@ public class CaravanNetworkingGame extends CaravanGame
 	 		thisClient.processPackets(); 
 	 		if (lastPosition != getPlayerPosition()) {
 	 			thisClient.sendMoveMessage(getPlayerPosition());
+	 			lastPosition = getPlayerPosition();
 	 		}
 	 	}
 	 	

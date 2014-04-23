@@ -71,7 +71,6 @@ public class GameClientTCP extends GameConnectionClient
 			} 
 			else if (msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
 			{
-				boolean exists = false;
 				// format: dsfr, remoteId, x,y,z 
 				UUID ghostID = UUID.fromString(msgTokens[1]);
 				Point3D location = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4]));
@@ -173,7 +172,6 @@ public class GameClientTCP extends GameConnectionClient
 			message += "," + pos.getY(); 
 			message += "," + pos.getZ(); 
 			sendPacket(message); 
-			System.out.println("Details sent to " + remId.toString() + " for " + id.toString());
 		} 
 		catch (IOException e) 
 		{ 
