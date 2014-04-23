@@ -21,6 +21,7 @@ public class CaravanNetworkingGame extends CaravanGame
 	private ProtocolType serverProtocol;
 	private GameClientTCP thisClient;
 	private boolean connected;
+	private Point3D lastPosition;
 
 	// assumes main() gets address/port from command line 
 	public CaravanNetworkingGame(String serverAddr, int sPort) 
@@ -48,6 +49,7 @@ public class CaravanNetworkingGame extends CaravanGame
 		} 
 		if (thisClient != null) { thisClient.sendJoinMessage(); } 
 		super.initGame();
+		lastPosition = getPlayerPosition();
 	} 
 	
 	protected void update(float time) 
@@ -55,7 +57,9 @@ public class CaravanNetworkingGame extends CaravanGame
 		// same as before, plus process any packets received from server 
 	 	if (thisClient != null) {
 	 		thisClient.processPackets(); 
-	 		thisClient.sendMoveMessage(getPlayerPosition());
+	 		if (lastPosition != getPlayerPosition()) {
+	 			thisClient.sendMoveMessage(getPlayerPosition());
+	 		}
 	 	}
 	 	
 	 	super.update(time);
@@ -77,6 +81,10 @@ public class CaravanNetworkingGame extends CaravanGame
 			} 
 		} 
 	} 	
+	
+	public void startScrolling() {
+		super.startScrolling();
+	}
 	
 	public void setConnected(boolean b) {
 		connected = b;

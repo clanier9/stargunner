@@ -271,11 +271,12 @@ public class CaravanGame extends BaseGame {
 		background = new Group();
 		background.addChild(t);
 		 
+		addGameWorldObject(background);		
+	}
+	
+	protected void startScrolling() {
 		background.addController(scroller);
 		scroller.addControlledNode(background);
-		addGameWorldObject(background);
-		
-		
 	}
 	
 	private TerrainBlock initTerrain()

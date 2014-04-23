@@ -28,10 +28,13 @@ public class Starter {
 				server.getLocalInetAddress();
 				System.out.print("waiting for the client to connect to " + server.getLocalInetAddress() + " on port " + localPort + "...");
 
-				String[] msgTokens = server.getLocalInetAddress().toString().split("/"); 
-				System.out.println(msgTokens[1]);
-				CaravanNetworkingGame serverClient = new CaravanNetworkingGame(msgTokens[1], localPort);
+				String[] msgTokens = server.getLocalInetAddress().toString().split("/"); 				
+				CaravanNetworkingGame serverClient = new CaravanNetworkingGame(msgTokens[1], localPort);		
 				serverClient.start();
+				while (!server.isConnected()) {
+					
+				}
+				server.sendStartScrollingMessages();
 			}
 			else if (str.charAt(0) == 'n') {
 				System.out.print("What is the server IP address?  ");

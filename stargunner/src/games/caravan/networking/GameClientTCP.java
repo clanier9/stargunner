@@ -23,6 +23,7 @@ public class GameClientTCP extends GameConnectionClient
 		super(remAddr, remPort, pType); 
 		this.game = game; 
 		this.id = UUID.randomUUID(); 
+		System.out.println(id.toString());
 	} 
 	
 	protected void processPacket(Object msg) // override 
@@ -45,13 +46,13 @@ public class GameClientTCP extends GameConnectionClient
 				else if(msgTokens[1].compareTo("failure") == 0) 
 					game.setConnected(false); 
 			} 
-			if(msgTokens[0].compareTo("bye") == 0) // receive “bye” 
+			else if(msgTokens[0].compareTo("bye") == 0) // receive “bye” 
 			{ 
 				// format: bye, remoteId 
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				removeGhostAvatar(ghostID); 
 			} 
-			if(msgTokens[0].compareTo("create") == 0) // receive “create…” 
+			else if(msgTokens[0].compareTo("create") == 0) // receive “create…” 
 			{  
 				// format: create, remoteId, x,y,z or dsfr, remoteId, x,y,z 
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
@@ -61,14 +62,14 @@ public class GameClientTCP extends GameConnectionClient
 					createGhostAvatar(ghostID, ghostPosition);
 				}
 			} 
-			if(msgTokens[0].compareTo("move") == 0) // receive “move” 
+			else if(msgTokens[0].compareTo("move") == 0) // receive “move” 
 			{ 
 				UUID ghostID = UUID.fromString(msgTokens[1]); 
 				// extract ghost x,y,z, position from message, then: 
 				Point3D ghostPosition = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4]));
 				moveGhostAvatar(ghostID, ghostPosition);
 			} 
-			if (msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
+			else if (msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
 			{
 				boolean exists = false;
 				// format: dsfr, remoteId, x,y,z 
@@ -77,17 +78,34 @@ public class GameClientTCP extends GameConnectionClient
 				
 				if (ghost==null){
 					createGhostAvatar(ghostID, location);
+					sendReadyMessage();
 				}
 				
 			} 
-			if(msgTokens[0].compareTo("wsds") == 0) // receive “wants details” 
+			else if(msgTokens[0].compareTo("wsds") == 0) // receive “wants details” 
 			{ 
 				Point3D pos = game.getPlayerPosition();
 				UUID remID = UUID.fromString(msgTokens[1]);
 				sendDetailsForMessage(remID, pos);
 			} 
+			else if(msgTokens[0].compareTo("scroll") == 0) // receive “scroll” 
+			{ 
+				game.startScrolling();
+			} 
 		}
 	} 
+
+	private void sendReadyMessage() {
+		try 
+		{ 
+			String message = new String("ready," + id.toString()); 
+			sendPacket(message); 
+		} 
+		catch (IOException e) 
+		{ 
+			e.printStackTrace();
+		}
+	}
 
 	private void createGhostAvatar(UUID ghostID, Point3D ghostPosition) {
 		ghost = new GhostAvatar(ghostID, ghostPosition);
@@ -155,6 +173,7 @@ public class GameClientTCP extends GameConnectionClient
 			message += "," + pos.getY(); 
 			message += "," + pos.getZ(); 
 			sendPacket(message); 
+			System.out.println("Details sent to " + remId.toString() + " for " + id.toString());
 		} 
 		catch (IOException e) 
 		{ 
