@@ -5,9 +5,10 @@ import java.util.UUID;
 import graphicslib3D.Matrix3D;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
+import sage.scene.Model3DTriMesh;
 import sage.scene.TriMesh;
 
-public class BaseCharacter extends TriMesh {
+public class BaseCharacter extends Model3DTriMesh {
 
 	private Point3D location;
 	private Vector3D foward;
@@ -34,6 +35,31 @@ public class BaseCharacter extends TriMesh {
 		setSpeed(0.05f);
 		updateTranslation();
 		id = UUID.randomUUID();
+	}
+	
+	public void addModel(Model3DTriMesh model)
+	{
+		setAnimatedNormals(model.getAnimatedNormals()); 
+		setAnimatedVertices(model.getAnimatedVertices()); 
+		setAnimations(model.getAnimations()); 
+		setJoints(model.getJoints()); 
+	    setShaderProgram(model.getShaderProgram()); 
+		setTextureFilename(model.getTextureFileName()); 
+		setVertexBoneIDs(model.getVertexBoneIDs()); 
+		setVertexBoneWeights(model.getVertexBoneWeights());
+		
+		
+		setColorBuffer(model.getColorBuffer());  
+		setFaceMaterialIndices(model.getFaceMaterialIndices()); 
+		setFaceMaterials(model.getFaceMaterials()); 
+		setIndexBuffer(model.getIndexBuffer()); 
+		setNormalBuffer(model.getNormalBuffer()); 
+		setTextureBuffer(model.getTextureBuffer()); 
+		setVertexBuffer(model.getVertexBuffer()); 
+		
+		updateLocalBound();
+		
+
 	}
 
 	public UUID getId() {
