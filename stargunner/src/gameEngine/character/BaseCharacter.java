@@ -61,6 +61,19 @@ public class BaseCharacter extends Model3DTriMesh {
 		
 
 	}
+	
+	public void addModel(TriMesh m)
+	{
+		setColorBuffer(m.getColorBuffer());  
+		setFaceMaterialIndices(m.getFaceMaterialIndices()); 
+		setFaceMaterials(m.getFaceMaterials()); 
+		setIndexBuffer(m.getIndexBuffer()); 
+		setNormalBuffer(m.getNormalBuffer()); 
+		setTextureBuffer(m.getTextureBuffer()); 
+		setVertexBuffer(m.getVertexBuffer()); 
+		
+		updateLocalBound();
+	}
 
 	public UUID getId() {
 		return id;
