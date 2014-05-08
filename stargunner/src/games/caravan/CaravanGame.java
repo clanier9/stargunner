@@ -328,18 +328,6 @@ public class CaravanGame extends BaseGame {
 		Matrix3D camTranslation = new Matrix3D();
 		camTranslation.translate(camLoc.getX(), camLoc.getY(), camLoc.getZ());
 		sky.setLocalTranslation(camTranslation);
-		
-		long modTime = scriptFile.lastModified();
-		if (modTime > fileLastModifiedTime)
-		{
-		fileLastModifiedTime = modTime;
-		this.runScript();
-		removeGameWorldObject(p1);
-		p1 = (Ship) engine.get("p1");
-		setUpControls(p1);
-		addGameWorldObject(p1);
-		}
-		
 		super.update(elapsedTimeMS);
 	
 	}
