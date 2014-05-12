@@ -184,5 +184,4 @@ public class BaseCharacter extends Model3DTriMesh {
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
-
 }
