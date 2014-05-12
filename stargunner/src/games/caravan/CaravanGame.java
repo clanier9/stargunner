@@ -20,6 +20,7 @@ import gameEngine.input.action.*;
 import games.caravan.character.FighterJet;
 import games.caravan.character.RegularShip;
 import games.caravan.character.Ship;
+import games.caravan.character.TRex;
 import games.caravan.controller.ScrollController;
 import graphicslib3D.Matrix3D;
 import graphicslib3D.Point3D;
@@ -37,11 +38,13 @@ import sage.event.IEventManager;
 import sage.input.IInputManager;
 import sage.input.action.AbstractInputAction;
 import sage.input.action.IAction;
+import sage.model.loader.OBJLoader;
 import sage.renderer.IRenderer;
 import sage.scene.Group;
 import sage.scene.HUDString;
 import sage.scene.SceneNode;
 import sage.scene.SkyBox;
+import sage.scene.TriMesh;
 import sage.scene.state.RenderState.RenderStateType;
 import sage.scene.state.RenderState;
 import sage.scene.state.TextureState;
@@ -233,21 +236,18 @@ public class CaravanGame extends BaseGame {
 		
 		initGameObjects();
 		initPlayers();
-		initAudio();
+//		initAudio();
 		update(0);
 	}
 
 	private void initAudio() {
-		audioMgr = AudioManagerFactory.createAudioManager( 
-		"sage.audio.joal.JOALAudioManager"); 
-		if(!audioMgr.initialize()) 
-		{ System.out.println("Audio Manager failed to initialize!"); 
-		return; 
+		audioMgr = AudioManagerFactory.createAudioManager("sage.audio.joal.JOALAudioManager"); 
+		if(!audioMgr.initialize()) { 
+			System.out.println("Audio Manager failed to initialize!"); 
+			return; 
 		} 
-		resource1 = audioMgr.createAudioResource("OverHere.wav", 
-		AudioResourceType.AUDIO_SAMPLE); 
-		resource2 = audioMgr.createAudioResource("water.wav", 
-		AudioResourceType.AUDIO_SAMPLE); 
+		
+		resource1 = audioMgr.createAudioResource("sounds + " + File.separator + "OverHere.wav", AudioResourceType.AUDIO_SAMPLE); 
 		bossSound = new Sound(resource1, SoundType.SOUND_EFFECT, 100, true); 
 		bossSound.initialize(audioMgr); 
 		bossSound.setMaxDistance(50.0f); 
@@ -261,15 +261,15 @@ public class CaravanGame extends BaseGame {
 
 	private void setEarParameters() {		
 		audioMgr.getEar().setLocation(p1.getLocation()); 
-		audioMgr.getEar().setOrientation(new Vector3D(0,0,-1), new Vector3D(0,1,0)); 
+		audioMgr.getEar().setOrientation(new Vector3D(0,0,1), new Vector3D(0,1,0)); 
 	}
 
 	private void initPlayers() {
 		
-		p1 = new FighterJet(new Point3D(0,10,0));
+		p1 = new FighterJet(new Point3D(0,10,-18));
 		p1.scale(.30f,.30f,.30f);
 		p1.rotate(-90, new Vector3D(1,0,0));
-		textureObj(p1, "fighter7.png");
+		textureObj(p1, "fighter6.png");
 		//executeScript(engine, scriptName);
 		addGameWorldObject(p1);
 		
@@ -278,6 +278,9 @@ public class CaravanGame extends BaseGame {
 		camera.setLocation(new Point3D(0,25,-23));
 		camera.lookAt(new Point3D(0,0,0), new Vector3D(0,1,0));
 		
+		boss = new TRex(new Point3D(0,0,20));	
+		boss.scale(3, 3, 3);
+		addGameWorldObject(boss);
 	}
 	
 	private void setUpControls(BaseCharacter p)
@@ -318,6 +321,7 @@ public class CaravanGame extends BaseGame {
 		scroller = new ScrollController(0.002);
 		
 		TerrainBlock t = initTerrain();
+		t.scale(2, 1, 2);
 		background = new Group();
 		background.addChild(t);
 		 
@@ -379,15 +383,15 @@ public class CaravanGame extends BaseGame {
 		camTranslation.translate(camLoc.getX(), camLoc.getY(), camLoc.getZ());
 		sky.setLocalTranslation(camTranslation);
 		
-		bossSound.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
-		setEarParameters(); 
+//		bossSound.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+//		setEarParameters(); 
 
 		super.update(elapsedTimeMS);
 	
 	}
 	
 	public void textureObj(BaseCharacter c, String file) {
-		Texture objTexture = TextureManager.loadTexture2D("./materials/" + file); 
+		Texture objTexture = TextureManager.loadTexture2D("materials" + File.separator + file); 
 		objTexture.setApplyMode(Texture.ApplyMode.Replace); 
 		TextureState objTextureState = (TextureState) display.getRenderer().createRenderState(RenderState.RenderStateType.Texture); 
 		objTextureState.setTexture(objTexture, 0); 

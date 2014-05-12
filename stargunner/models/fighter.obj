@@ -1,7 +1,7 @@
 # Blender v2.70 (sub 0) OBJ File: 'fighter.blend'
 # www.blender.org
 mtllib fighter.mtl
-o Left_Wing_Cube.005
+
 v 2.625546 0.093231 -2.634560
 v 2.625546 0.093231 -1.978157
 v 0.604798 -0.113910 0.040822
@@ -1325,7 +1325,6 @@ vt 0.564655 0.159279
 vt 0.497248 0.158908
 vt 0.550827 0.306565
 usemtl fighter
-s off
 f 5/1 6/2 2/3 1/4
 f 13/5 7/6 3/7 15/8
 f 7/9 8/10 4/11 3/12

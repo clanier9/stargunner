@@ -1,5 +1,7 @@
 package games.caravan.character;
 
+import java.io.File;
+
 import sage.model.loader.OBJLoader;
 import sage.model.loader.ogreXML.OgreXMLParser;
 import sage.scene.Group;
@@ -14,14 +16,14 @@ public class FighterJet extends RegularShip {
 	public FighterJet() {
 		super();
 		OBJLoader loader = new OBJLoader(); 
-		TriMesh jet = loader.loadModel("./models/fighter.obj"); 
+		TriMesh jet = loader.loadModel("models" + File.separator + "fighter.obj"); 
 		addModel(jet);	
 	}
 	
 	public FighterJet(Point3D p) {
 		super(p);
 		OBJLoader loader = new OBJLoader();  
-		TriMesh jet = loader.loadModel("./models/fighter.obj"); 
+		TriMesh jet = loader.loadModel("models" + File.separator + "fighter.obj"); 
 		addModel(jet);
 	}
 }
