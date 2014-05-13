@@ -20,12 +20,14 @@ public class TRex extends BaseCharacter {
 	Model3DTriMesh myObject;
 	
 	public TRex() {
+		super();
 		OBJLoader loader = new OBJLoader(); 
 		TriMesh trex = loader.loadModel("models" + File.separator + "T-Rex.obj"); 
 		addModel(trex);
 	}
 	
 	public TRex(Point3D p) {
+		super(p);
 		OBJLoader loader = new OBJLoader(); 
 		TriMesh trex = loader.loadModel("models" + File.separator + "T-Rex.obj"); 
 		addModel(trex);
