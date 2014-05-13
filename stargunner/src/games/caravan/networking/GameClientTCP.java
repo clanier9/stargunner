@@ -108,6 +108,9 @@ public class GameClientTCP extends GameConnectionClient
 
 	private void createGhostAvatar(UUID ghostID, Point3D ghostPosition) {
 		ghost = new GhostAvatar(ghostID, ghostPosition);
+		ghost.scale(.30f,.30f,.30f);
+		ghost.rotate(-90, new Vector3D(1,0,0));
+		game.textureObj(ghost, "ghostfighter.png");
 		game.addGameWorldObject(ghost);
 	}
 
