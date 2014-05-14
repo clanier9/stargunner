@@ -15,9 +15,12 @@ import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Event;
 import gameEngine.input.action.*;
+import games.caravan.character.Bullet;
 import games.caravan.character.RegularShip;
 import games.caravan.character.Ship;
+import games.caravan.controller.BulletController;
 import games.caravan.controller.ScrollController;
+import games.caravan.controller.SnakeController;
 import graphicslib3D.Matrix3D;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
@@ -72,6 +75,8 @@ public class CaravanGame extends BaseGame {
 	private Group background;
 	private Group bullets;
 	
+	private BulletController bulletControl;
+	private SnakeController snakeControl;
 	private ScrollController scroller;
 	
 	private IEventManager eventMgr;
@@ -211,9 +216,8 @@ public class CaravanGame extends BaseGame {
 		}
 		
 		
-		
-		initGameObjects();
 		initPlayers();
+		initGameObjects();
 		update(0);
 	}
 
@@ -270,6 +274,11 @@ public class CaravanGame extends BaseGame {
 		TerrainBlock t = initTerrain();
 		background = new Group();
 		background.addChild(t);
+		
+		Point3D camLoc = camera.getLocation();
+		Matrix3D camTranslation = new Matrix3D();
+		camTranslation.translate(camLoc.getX(), camLoc.getY(), camLoc.getZ());
+		sky.setLocalTranslation(camTranslation);
 		 
 		addGameWorldObject(background);		
 	}
@@ -324,10 +333,10 @@ public class CaravanGame extends BaseGame {
 	
 	protected void update(float elapsedTimeMS)
 	{
-		Point3D camLoc = camera.getLocation();
-		Matrix3D camTranslation = new Matrix3D();
-		camTranslation.translate(camLoc.getX(), camLoc.getY(), camLoc.getZ());
-		sky.setLocalTranslation(camTranslation);
+		bulletControl.update(elapsedTimeMS);
+		snakeControl.update(elapsedTimeMS);
+		scroller.update(elapsedTimeMS);
+		
 		super.update(elapsedTimeMS);
 	
 	}
@@ -383,6 +392,17 @@ public class CaravanGame extends BaseGame {
 			System.out.println ("Null ptr exception reading " + scriptFile + e3);
 		} 
 	}
+	
+	public void addBullet(Bullet b)
+	{
+		bullets.addChild(b);
+	}
+	
+	public void removeBullet(Bullet b)
+	{
+		bullets.removeChild(b);
+	}
+	
 	
 
 }
