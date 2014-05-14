@@ -4,7 +4,7 @@ import graphicslib3D.Point3D;
 
 import java.util.UUID;
 
-public class GhostAvatar extends RegularShip
+public class GhostAvatar extends FighterJet
 {
 //	Ship p1;
 	
