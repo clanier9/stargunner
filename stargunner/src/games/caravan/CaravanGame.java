@@ -264,8 +264,8 @@ public class CaravanGame extends BaseGame {
 	}
 
 	private void setEarParameters() {		
-		audioMgr.getEar().setLocation(p1.getLocation()); 
-		audioMgr.getEar().setOrientation(new Point3D(0,0,1), new Vector3D(0,1,0)); 
+		audioMgr.getEar().setLocation(camera.getLocation()); 
+		audioMgr.getEar().setOrientation(new Vector3D(0,0,1), new Vector3D(0,1,0)); 
 	}
 
 	private void initPlayers() {
