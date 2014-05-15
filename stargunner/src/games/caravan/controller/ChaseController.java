@@ -15,6 +15,7 @@ public class ChaseController extends Controller {
 	
 	public ChaseController() {
 		// TODO Auto-generated constructor stub
+		players = new ArrayList<Ship>();
 	}
 
 	@Override
@@ -32,11 +33,11 @@ public class ChaseController extends Controller {
 				if(pLoc.getZ() < bLoc.getZ()) //If player is still below you
 				{
 					
-					if(pLoc.getX() - bLoc.getX() < 0.5)
+					if(pLoc.getX() - bLoc.getX() > 0.5)
 					{
 						b.setRotation(150);
 					}
-					else if(pLoc.getX() - bLoc.getX() > 0.5)
+					else if(pLoc.getX() - bLoc.getX() < 0.5)
 					{
 						b.setRotation(210);
 					}

@@ -24,6 +24,7 @@ import games.caravan.character.Ship;
 import games.caravan.character.UFO;
 import games.caravan.controller.BulletController;
 import games.caravan.character.TRex;
+import games.caravan.controller.ChaseController;
 import games.caravan.controller.ScrollController;
 import games.caravan.controller.SnakeController;
 import games.caravan.input.action.FireAction;
@@ -94,6 +95,7 @@ public class CaravanGame extends BaseGame {
 	private BulletController bulletControl;
 	private SnakeController snakeControl;
 	private ScrollController scroller;
+	private ChaseController chaser;
 	
 	private IEventManager eventMgr;
 	
@@ -239,9 +241,14 @@ public class CaravanGame extends BaseGame {
 					IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 		}
 		
-		
-		initPlayers();
 		initGameObjects();
+		initPlayers();
+		
+		chaser = new ChaseController();
+		chaser.addPlayer((Ship)p1);
+		
+		addGameWorldObject(createEnemy());
+		
 //		initAudio();
 		update(0);
 	}
@@ -267,14 +274,13 @@ public class CaravanGame extends BaseGame {
 
 	private void setEarParameters() {		
 		audioMgr.getEar().setLocation(camera.getLocation()); 
-		audioMgr.getEar().setOrientation(new Vector3D(0,0,1), new Vector3D(0,1,0)); 
+		//audioMgr.getEar().setOrientation(new Vector3D(0,0,1), new Vector3D(0,1,0)); 
 	}
 
 	private void initPlayers() {
 		
 		p1 = new FighterJet(new Point3D(0,10,-18));
 		p1.scale(.30f,.30f,.30f);
-		p1.rotate(-90, new Vector3D(1,0,0));
 		textureObj(p1, "fighter6.png");
 		//executeScript(engine, scriptName);
 		addGameWorldObject(p1);
@@ -340,9 +346,6 @@ public class CaravanGame extends BaseGame {
 		bulletControl = new BulletController();
 		bullets = new Group();
 		
-		bullets.addController(bulletControl);
-		bulletControl.addControlledNode(bullets);
-		
 		snakeControl = new SnakeController(0.0002);
 		
 		addGameWorldObject(bullets);
@@ -366,9 +369,7 @@ public class CaravanGame extends BaseGame {
 		Texture groundTexture = TextureManager.loadTexture2D(texFolder + File.separator +"redrock.jpg");
 		
 		groundTexture.setApplyMode(sage.texture.Texture.ApplyMode.Replace);
-		groundState = (TextureState)
-		
-		display.getRenderer().createRenderState(RenderStateType.Texture);
+		groundState = (TextureState) display.getRenderer().createRenderState(RenderStateType.Texture);
 		groundState.setTexture(groundTexture,0);
 		groundState.setEnabled(true);
 		
@@ -400,9 +401,9 @@ public class CaravanGame extends BaseGame {
 	protected void update(float elapsedTimeMS)
 	{
 		//Update controllers
-		bulletControl.update(elapsedTimeMS);
-		snakeControl.update(elapsedTimeMS);
-		scroller.update(elapsedTimeMS);
+		//bulletControl.update(elapsedTimeMS);
+		//snakeControl.update(elapsedTimeMS);
+		//scroller.update(elapsedTimeMS);
 		
 		//Skybox
 		Point3D camLoc = camera.getLocation();
@@ -490,6 +491,7 @@ public class CaravanGame extends BaseGame {
 	public void removeBullet(Bullet b)
 	{
 		bullets.removeChild(b);
+		b.removeController(bulletControl);
 	}
 	
 	public void setSoundsOff() {
@@ -506,6 +508,9 @@ public class CaravanGame extends BaseGame {
 	public UFO createEnemy()
 	{
 		UFO u = new UFO();
+		u.setLocation(new Point3D(0,10,16));
+		u.addController(chaser);
+		chaser.addControlledNode(u);
 		textureObj(u, "ufo.png");
 		return u;
 	}

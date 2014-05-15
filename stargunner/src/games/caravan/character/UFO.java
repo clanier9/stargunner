@@ -13,6 +13,7 @@ public class UFO extends Ship {
 		OBJLoader loader = new OBJLoader();  
 		TriMesh ufo = loader.loadModel("models" + File.separator + "ufo.obj"); 
 		addModel(ufo);
+		setSpeed(0.0001f);
 	}
 
 	public UFO(Point3D p) {
@@ -20,6 +21,7 @@ public class UFO extends Ship {
 		OBJLoader loader = new OBJLoader();  
 		TriMesh ufo = loader.loadModel("models" + File.separator + "ufo.obj"); 
 		addModel(ufo);
+		setSpeed(0.0001f);
 	}
 
 	public Bullet[] fire() {
