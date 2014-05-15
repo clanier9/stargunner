@@ -18,12 +18,15 @@ public class SnakeController extends Controller {
 	public void update(double  time) {
 		for (SceneNode node : controlledNodes)
 		{
-			Bullet b = (Bullet) node;
-			double dist = b.getSpeed() * time;
-			b.moveFoward(dist);
-			Point3D p = b.getLocation();
-			p.setX(Math.sinh(p.getZ()) * width);
-			b.setLocation(p);
+			if(node instanceof Bullet)
+			{
+				Bullet b = (Bullet) node;
+				double dist = b.getSpeed() * time;
+				b.moveFoward(dist);
+				Point3D p = b.getLocation();
+				p.setX(Math.sinh(p.getZ()) * width);
+				b.setLocation(p);
+			}
 		}
 
 	}

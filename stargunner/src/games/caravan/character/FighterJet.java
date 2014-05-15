@@ -3,13 +3,7 @@ package games.caravan.character;
 import java.io.File;
 
 import sage.model.loader.OBJLoader;
-import sage.model.loader.ogreXML.OgreXMLParser;
-import sage.scene.Group;
-import sage.scene.Model3DTriMesh;
-import sage.scene.SceneNode;
 import sage.scene.TriMesh;
-import sage.scene.state.RenderState;
-import sage.texture.TextureManager;
 import graphicslib3D.Point3D;
 
 public class FighterJet extends RegularShip {
