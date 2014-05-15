@@ -14,44 +14,21 @@ public class RegularShip extends Ship {
 
 	public RegularShip() {
 		super();
-		/*FloatBuffer vertBuf =
-				com.jogamp.common.nio.Buffers.newDirectFloatBuffer(vrts);
-				FloatBuffer colorBuf =
-				com.jogamp.common.nio.Buffers.newDirectFloatBuffer(cl);
-				IntBuffer triangleBuf =
-				com.jogamp.common.nio.Buffers.newDirectIntBuffer(triangles);
-				this.setVertexBuffer(vertBuf);
-				this.setColorBuffer(colorBuf);
-				this.setIndexBuffer(triangleBuf);
-		*/
 				this.rotate(90, new Vector3D(1,0,0));
+				setFireRate(1000);
 	}
 
 	public RegularShip(Point3D p) {
 		super(p);
-		/*
-		FloatBuffer vertBuf =
-				com.jogamp.common.nio.Buffers.newDirectFloatBuffer(vrts);
-				FloatBuffer colorBuf =
-				com.jogamp.common.nio.Buffers.newDirectFloatBuffer(cl);
-				IntBuffer triangleBuf =
-				com.jogamp.common.nio.Buffers.newDirectIntBuffer(triangles);
-				this.setVertexBuffer(vertBuf);
-				this.setColorBuffer(colorBuf);
-				this.setIndexBuffer(triangleBuf);
-			*/
 				this.rotate(90, new Vector3D(1,0,0));
+				setFireRate(1000);
 	}
 
 	@Override
 	public Bullet[] fire() {
 		Point3D loc = getLocation();
-		RegularBullet b1 = new RegularBullet();
-		RegularBullet b2 = new RegularBullet();
-		Point3D loc2 = new Point3D(loc.getX() - 0.3, loc.getY(), loc.getZ() + 0.2);
-		Point3D loc3 = new Point3D(loc.getX() + 0.3, loc.getY(), loc.getZ() + 0.2);
-		b1.setLocation(loc2);
-		b2.setLocation(loc3);
+		RegularBullet b1 = new RegularBullet(new Point3D(loc.getX() - 0.3, loc.getY(), loc.getZ() + 0.2));
+		RegularBullet b2 = new RegularBullet(new Point3D(loc.getX() + 0.3, loc.getY(), loc.getZ() + 0.2));
 		Bullet bul[] = new Bullet[2];
 		bul[0] = b1;
 		bul[1] = b2;

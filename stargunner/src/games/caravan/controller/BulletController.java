@@ -17,9 +17,12 @@ public class BulletController extends Controller {
 	{
 		for (SceneNode node : controlledNodes)
 		{
-			Bullet b = (Bullet) node;
-			double dist = b.getSpeed() * time;
-			b.moveFoward(dist);
+			if(node instanceof Bullet)
+			{
+				Bullet b = (Bullet) node;
+				double dist = b.getSpeed() * time;
+				b.moveFoward(dist);
+			}
 		}
 	}
 }

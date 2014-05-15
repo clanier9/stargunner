@@ -21,10 +21,12 @@ import games.caravan.character.Bullet;
 import games.caravan.character.FighterJet;
 import games.caravan.character.RegularShip;
 import games.caravan.character.Ship;
+import games.caravan.character.UFO;
 import games.caravan.controller.BulletController;
 import games.caravan.character.TRex;
 import games.caravan.controller.ScrollController;
 import games.caravan.controller.SnakeController;
+import games.caravan.input.action.FireAction;
 import graphicslib3D.Matrix3D;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
@@ -293,6 +295,7 @@ public class CaravanGame extends BaseGame {
 		IAction rstrafe = new RightAction(p);
 		IAction fwd = new FowardAction(p);
 		IAction bck = new BackwardAction(p);
+		IAction fire = new FireAction((Ship) p, this);
 		
 		im.associateAction (
 				kbName, net.java.games.input.Component.Identifier.Key.UP,
@@ -309,6 +312,9 @@ public class CaravanGame extends BaseGame {
 		im.associateAction (
 				kbName, net.java.games.input.Component.Identifier.Key.RIGHT,
 				rstrafe, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		im.associateAction (
+				kbName, net.java.games.input.Component.Identifier.Key.Z,
+				fire, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 	}
 
 	private void initGameObjects() {
@@ -328,13 +334,19 @@ public class CaravanGame extends BaseGame {
 		t.scale(2, 1, 2);
 		background = new Group();
 		background.addChild(t);
-		
-		Point3D camLoc = camera.getLocation();
-		Matrix3D camTranslation = new Matrix3D();
-		camTranslation.translate(camLoc.getX(), camLoc.getY(), camLoc.getZ());
-		sky.setLocalTranslation(camTranslation);
 		 
 		addGameWorldObject(background);		
+		
+		bulletControl = new BulletController();
+		bullets = new Group();
+		
+		bullets.addController(bulletControl);
+		bulletControl.addControlledNode(bullets);
+		
+		snakeControl = new SnakeController(0.0002);
+		
+		addGameWorldObject(bullets);
+		
 	}
 	
 	public void startScrolling() {
@@ -471,6 +483,8 @@ public class CaravanGame extends BaseGame {
 	public void addBullet(Bullet b)
 	{
 		bullets.addChild(b);
+		b.addController(bulletControl);
+		bulletControl.addControlledNode(b);
 	}
 	
 	public void removeBullet(Bullet b)
@@ -487,6 +501,13 @@ public class CaravanGame extends BaseGame {
 		 
 		// Finally shut down the audio manager 
 		audioMgr.shutdown();
+	}
+	
+	public UFO createEnemy()
+	{
+		UFO u = new UFO();
+		textureObj(u, "ufo.png");
+		return u;
 	}
 
 }

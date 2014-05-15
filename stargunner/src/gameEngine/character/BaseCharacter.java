@@ -185,4 +185,14 @@ public class BaseCharacter extends Model3DTriMesh {
 		this.speed = speed;
 	}
 	
+	public void lookAt(Point3D p) //Note: Does not rotate the model
+	{
+		Vector3D target = new Vector3D(p);
+		Vector3D pos = new Vector3D(getLocation());
+		Vector3D viewDir = target.add(pos).normalize();
+		setFowardVector(viewDir);
+		setSideVector(getFowardVector().cross(up));
+		setUpVector(getFowardVector().cross(side));
+	}
+	
 }
