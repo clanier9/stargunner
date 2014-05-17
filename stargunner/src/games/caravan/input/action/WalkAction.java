@@ -15,5 +15,10 @@ public class WalkAction extends AbstractInputAction {
 	 { 
 		 avatar.stopAnimation(); 
 		 avatar.startAnimation("Walk");
+		 //set walking boolean to true
+		 //walk to desired location
+		 //play roar sound and animation
+		 //stop sound and animations
+		 //set walking boolean to false
 	 }
 }

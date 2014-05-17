@@ -11,9 +11,9 @@ import sage.scene.TriMesh;
 public class BaseCharacter extends Model3DTriMesh {
 
 	private Point3D location;
-	private Vector3D foward;
-	private Vector3D side;
-	private Vector3D up;
+	protected Vector3D foward;
+	protected Vector3D side;
+	protected Vector3D up;
 	protected UUID id;
 	private float speed;
 	

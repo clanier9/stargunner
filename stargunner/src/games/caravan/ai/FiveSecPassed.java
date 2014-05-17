@@ -18,7 +18,8 @@ public class FiveSecPassed extends BTCondition {
 	
 	protected boolean check() { 
 		float elapsedMilliSecs = (System.nanoTime()-lastUpdateTime)/(1000000.0f); 
-		if (elapsedMilliSecs >= 500.0f) { 
+		
+		if (elapsedMilliSecs >= 5000.0f) { 
 			lastUpdateTime = System.nanoTime(); 
 			npcc.setNearFlag(false); 
 			return true; 

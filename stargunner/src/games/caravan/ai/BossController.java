@@ -29,4 +29,20 @@ public class BossController extends NPCcontroller {
 		bt.insert(20, new PlayerNear(game, this, boss, false)); 
 		bt.insert(20, new AttackPlayer(boss)); 
 	}
+	
+	public void npcLoop()
+	{ 
+		while (true)
+		{ 
+			long frameStartTime = System.nanoTime();
+			float elapsedMilliSecs = (frameStartTime-lastUpdateTime)/(1000000.0f);
+			if (elapsedMilliSecs >= 50.0f)
+			{ 
+				lastUpdateTime = frameStartTime;
+				boss.updateLocation();
+				bt.update(elapsedMilliSecs);
+			}	
+			Thread.yield();
+		}
+	}
 }

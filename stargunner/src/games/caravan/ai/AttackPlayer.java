@@ -14,7 +14,8 @@ public class AttackPlayer extends BTAction {
 	@Override
 	protected BTStatus update(float elapsedTime) {
 		// TODO Auto-generated method stub
-		return null;
+		//attack one of the players;
+		return BTStatus.BH_SUCCESS;
 	}
 
 }

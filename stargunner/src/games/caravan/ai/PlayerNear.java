@@ -21,7 +21,7 @@ public class PlayerNear extends BTCondition {
 	
 	protected boolean check() {
 		Point3D npcP = new Point3D(npc.getX(),npc.getY(),npc.getZ()); 
-		game.checkPlayerProximity(); 
+		npcc.setNearFlag(game.checkPlayerProximity()); 
 		return npcc.getNearFlag(); 
 } } 
 

@@ -13,7 +13,8 @@ public class MoveAround extends BTAction {
 	
 	@Override
 	protected BTStatus update(float elapsedTime) {
-		// TODO Auto-generated method stub
-		return null;
+		//TODO
+		//if not already walking, start a walk action to a location
+		return BTStatus.BH_SUCCESS;
 	}
 }
