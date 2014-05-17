@@ -5,6 +5,9 @@ import graphicslib3D.Vector3D;
 
 public class RegularShip extends Ship {
 
+	public static final double MAX_X = 50;
+	public static final double MAX_Z = 50;
+	
 	public RegularShip() {
 		super();
 				setFireRate(1000);
@@ -27,6 +30,38 @@ public class RegularShip extends Ship {
 		bul[1] = b2;
 		return bul;
 
+	}
+	
+	public void moveFoward(double amt)
+	{
+		super.moveFoward(amt);
+		Point3D myLoc = getLocation();
+		if(myLoc.getZ() > MAX_Z)
+		{
+			myLoc.setZ(MAX_Z);
+			setLocation(myLoc);
+		}
+		else if(myLoc.getZ() < -MAX_Z)
+		{
+			myLoc.setZ(-MAX_Z);
+			setLocation(myLoc);
+		}
+	}
+	
+	public void strafeRight(double amt)
+	{
+		super.strafeRight(amt);
+		Point3D myLoc = getLocation();
+		if(myLoc.getX() > MAX_X)
+		{
+			myLoc.setX(MAX_X);
+			setLocation(myLoc);
+		}
+		else if(myLoc.getX() < -MAX_X)
+		{
+			myLoc.setX(-MAX_X);
+			setLocation(myLoc);
+		}
 	}
 
 }

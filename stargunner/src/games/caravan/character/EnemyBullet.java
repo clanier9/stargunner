@@ -27,6 +27,7 @@ public class EnemyBullet extends Bullet {
 		this.rotate(-90, new Vector3D(1,0,0));
 		this.scale(0.1f, 0.1f, 1);
 		setSpeed(0.001f);
+		this.updateLocalBound();
 	}
 	
 	public EnemyBullet(Point3D p, Point3D target)
@@ -45,6 +46,7 @@ public class EnemyBullet extends Bullet {
 		this.rotate(-90, new Vector3D(1,0,0));
 		this.scale(0.1f, 0.1f, 1);
 		setSpeed(0.001f);
+		this.updateLocalBound();
 	}
 
 }

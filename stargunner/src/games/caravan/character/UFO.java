@@ -8,12 +8,16 @@ import graphicslib3D.Point3D;
 
 public class UFO extends Ship {
 
+	private Ship target;
+	private double xSpawn;
+	
 	public UFO() {
 		super();
 		OBJLoader loader = new OBJLoader();  
 		TriMesh ufo = loader.loadModel("models" + File.separator + "ufo.obj"); 
 		addModel(ufo);
-		setSpeed(0.0001f);
+		setSpawn(getLocation().getX());
+		setSpeed(0.001f);
 	}
 
 	public UFO(Point3D p) {
@@ -21,7 +25,8 @@ public class UFO extends Ship {
 		OBJLoader loader = new OBJLoader();  
 		TriMesh ufo = loader.loadModel("models" + File.separator + "ufo.obj"); 
 		addModel(ufo);
-		setSpeed(0.0001f);
+		setSpawn(getLocation().getX());
+		setSpeed(0.001f);
 	}
 
 	public Bullet[] fire() {
@@ -35,6 +40,22 @@ public class UFO extends Ship {
 		Bullet[] b = fire();
 		b[0].lookAt(p);
 		return b;
+	}
+
+	public Ship getTarget() {
+		return target;
+	}
+
+	public void setTarget(Ship target) {
+		this.target = target;
+	}
+
+	public double getSpawn() {
+		return xSpawn;
+	}
+
+	public void setSpawn(double xSpawn) {
+		this.xSpawn = xSpawn;
 	}
 
 }

@@ -1,6 +1,7 @@
 package games.caravan.controller;
 
 import games.caravan.character.Bullet;
+import games.caravan.character.UFO;
 import graphicslib3D.Point3D;
 import sage.scene.Controller;
 import sage.scene.SceneNode;
@@ -18,13 +19,13 @@ public class SnakeController extends Controller {
 	public void update(double  time) {
 		for (SceneNode node : controlledNodes)
 		{
-			if(node instanceof Bullet)
+			if(node instanceof UFO)
 			{
-				Bullet b = (Bullet) node;
+				UFO b = (UFO) node;
 				double dist = b.getSpeed() * time;
 				b.moveFoward(dist);
 				Point3D p = b.getLocation();
-				p.setX(Math.sinh(p.getZ()) * width);
+				p.setX(Math.sinh(p.getZ()) * width + b.getSpawn());
 				b.setLocation(p);
 			}
 		}

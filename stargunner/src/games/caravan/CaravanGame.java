@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -18,7 +21,9 @@ import net.java.games.input.Event;
 import gameEngine.character.BaseCharacter;
 import gameEngine.input.action.*;
 import games.caravan.character.Bullet;
+import games.caravan.character.EnemyBullet;
 import games.caravan.character.FighterJet;
+import games.caravan.character.RegularBullet;
 import games.caravan.character.RegularShip;
 import games.caravan.character.Ship;
 import games.caravan.character.UFO;
@@ -48,6 +53,7 @@ import sage.model.loader.OBJLoader;
 import sage.renderer.IRenderer;
 import sage.scene.Group;
 import sage.scene.HUDString;
+import sage.scene.Model3DTriMesh;
 import sage.scene.SceneNode;
 import sage.scene.SkyBox;
 import sage.scene.TriMesh;
@@ -68,6 +74,7 @@ public class CaravanGame extends BaseGame {
 	
 	private int rank;
 	private long fileLastModifiedTime = 0;
+	private long lastSpawnTime = 0;
 	
 
 	private HUDString scoreString;
@@ -91,6 +98,7 @@ public class CaravanGame extends BaseGame {
 	
 	private Group background;
 	private Group bullets;
+	private Group npcs;
 	
 	private BulletController bulletControl;
 	private SnakeController snakeControl;
@@ -105,12 +113,23 @@ public class CaravanGame extends BaseGame {
 	
 	private IAudioManager audioMgr;
 	private AudioResource resource1, resource2; 
-	private Sound bossSound;
+	private Sound bossGrowl, bossRoar;
+	
+	private static final double worldX = 50;
+	private static final double worldZ = 70;
+	private static final double yPlane = 10;
+	private static final double zSpawn = 20;
+	
+	OBJLoader obj = new OBJLoader();
+	TriMesh ufoModel = obj.loadModel("models" + File.separator + "ufo.obj");
+	Texture ufoTexture = TextureManager.loadTexture2D("materials" + File.separator + "ufo.png"); 
+	Random r = new Random();
 	
 	public CaravanGame() {
 		score = 0;
 		score2 = 0;
 		time = 0;
+		ufoTexture.setApplyMode(Texture.ApplyMode.Replace);
 	}
 	
 	public BaseCharacter getPlayer() {
@@ -243,14 +262,27 @@ public class CaravanGame extends BaseGame {
 		
 		initGameObjects();
 		initPlayers();
+
 		
 		chaser = new ChaseController(this);
 		chaser.addPlayer((Ship)p1);
+		snakeControl = new SnakeController(2);
 		
-		addGameWorldObject(createEnemy());
-		
-//		initAudio();
+		addGameWorldObject(createEnemy(new Point3D(0,10,16)));
+
+		initNPCs();
+		//initAudio();
+
 		update(0);
+	}
+
+	private void initNPCs() {
+		npcs = new Group();
+		addGameWorldObject(npcs);
+		boss = new TRex(new Point3D(0,10,10), bossRoar);	
+		boss.scale(3, 3, 3);
+		textureObj(boss, "skin3.png");
+		addGameWorldObject(boss);
 	}
 
 	private void initAudio() {
@@ -260,25 +292,34 @@ public class CaravanGame extends BaseGame {
 			return; 
 		} 
 		
-		resource1 = audioMgr.createAudioResource("sounds + " + File.separator + "OverHere.wav", AudioResourceType.AUDIO_SAMPLE); 
-		bossSound = new Sound(resource1, SoundType.SOUND_EFFECT, 100, true); 
-		bossSound.initialize(audioMgr); 
-		bossSound.setMaxDistance(50.0f); 
-		bossSound.setMinDistance(3.0f); 
-		bossSound.setRollOff(5.0f); 
-		bossSound.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		resource1 = audioMgr.createAudioResource("sounds" + File.separator + "growl.wav", AudioResourceType.AUDIO_SAMPLE); 
+		resource2 = audioMgr.createAudioResource("sounds" + File.separator + "roar.wav", AudioResourceType.AUDIO_SAMPLE); 
+		bossGrowl = new Sound(resource1, SoundType.SOUND_EFFECT, 100, true); 
+		bossRoar = new Sound(resource2, SoundType.SOUND_EFFECT, 100, false); 
+		bossGrowl.initialize(audioMgr); 
+		bossRoar.initialize(audioMgr); 
+		bossGrowl.setMaxDistance(150.0f); 
+		bossGrowl.setMinDistance(10.0f); 
+		bossGrowl.setRollOff(3.0f); 
+		bossGrowl.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		bossRoar.setMaxDistance(150.0f); 
+		bossRoar.setMinDistance(10.0f); 
+		bossRoar.setRollOff(3.0f); 
+		bossRoar.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
 		setEarParameters(); 
 		
-		bossSound.play(); 
+		bossGrowl.play(); 
 	}
 
 	private void setEarParameters() {		
 		audioMgr.getEar().setLocation(camera.getLocation()); 
-		//audioMgr.getEar().setOrientation(new Vector3D(0,0,1), new Vector3D(0,1,0)); 
+
+		audioMgr.getEar().setLocation(p1.getLocation()); 
+		audioMgr.getEar().setOrientation(new Vector3D(0,0,1), new Vector3D(0,1,0));
 	}
 
-	private void initPlayers() {
-		
+
+	private void initPlayers() {		
 		p1 = new FighterJet(new Point3D(0,10,-18));
 		p1.scale(.30f,.30f,.30f);
 		textureObj(p1, "fighter6.png");
@@ -289,10 +330,6 @@ public class CaravanGame extends BaseGame {
 		
 		camera.setLocation(new Point3D(0,25,-23));
 		camera.lookAt(new Point3D(0,0,0), new Vector3D(0,1,0));
-		
-		boss = new TRex(new Point3D(0,0,20));	
-		boss.scale(3, 3, 3);
-		addGameWorldObject(boss);
 	}
 	
 	private void setUpControls(BaseCharacter p)
@@ -400,27 +437,46 @@ public class CaravanGame extends BaseGame {
 	
 	protected void update(float elapsedTimeMS)
 	{
+		
+		hitDetection();
 		//Update controllers
 		//bulletControl.update(elapsedTimeMS);
 		//snakeControl.update(elapsedTimeMS);
 		//scroller.update(elapsedTimeMS);
 		
 		//Skybox
+		if(System.currentTimeMillis() - lastSpawnTime >= 7000)
+		{
+			//Double d = r.nextDouble() * (2*worldX) - (worldX/2);
+			addSnakingWave(0);
+			lastSpawnTime = System.currentTimeMillis();
+		}
+		
 		Point3D camLoc = camera.getLocation();
 		Matrix3D camTranslation = new Matrix3D();
 		camTranslation.translate(camLoc.getX(), camLoc.getY(), camLoc.getZ());
 		sky.setLocalTranslation(camTranslation);
 		
-//		bossSound.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
-//		setEarParameters(); 
+		//bossGrowl.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		//bossRoar.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		//setEarParameters(); 
 
+		boss.updateAnimation(elapsedTimeMS);
 		super.update(elapsedTimeMS);
-	
 	}
 	
 	public void textureObj(BaseCharacter c, String file) {
 		Texture objTexture = TextureManager.loadTexture2D("materials" + File.separator + file); 
 		objTexture.setApplyMode(Texture.ApplyMode.Replace); 
+		TextureState objTextureState = (TextureState) display.getRenderer().createRenderState(RenderState.RenderStateType.Texture); 
+		objTextureState.setTexture(objTexture, 0); 
+		objTextureState.setEnabled(true); 
+		c.setRenderState(objTextureState); 
+		c.updateRenderStates();
+	}
+	
+	public void textureObj(BaseCharacter c, Texture objTexture)
+	{
 		TextureState objTextureState = (TextureState) display.getRenderer().createRenderState(RenderState.RenderStateType.Texture); 
 		objTextureState.setTexture(objTexture, 0); 
 		objTextureState.setEnabled(true); 
@@ -496,28 +552,133 @@ public class CaravanGame extends BaseGame {
 	
 	public void setSoundsOff() {
 		// First release sounds
-		bossSound.release(audioMgr); 
+		bossGrowl.release(audioMgr); 
+		bossRoar.release(audioMgr);
 				 
 		// Next release audio resources 
 		resource1.unload();
+		resource2.unload();
 		 
 		// Finally shut down the audio manager 
 		audioMgr.shutdown();
 	}
 	
-	public UFO createEnemy()
+	public UFO createEnemy(Point3D p)
 	{
 		UFO u = new UFO();
-		u.setLocation(new Point3D(0,10,16));
-		u.addController(chaser);
-		chaser.addControlledNode(u);
-		textureObj(u, "ufo.png");
+		u.addModel(ufoModel);
+		u.setLocation(p);
+		textureObj(u,ufoTexture);
 		return u;
 	}
 	
-	public void removeEnemy()
+	public void removeEnemy(UFO u)
+	{
+		removeGameWorldObject(u);
+	}
+	
+	public void hitDetection()
 	{
 		
+		ArrayList<SceneNode> deletion = new ArrayList<SceneNode>(); //Have to mark for deletion to avoid concurrency errors
+		Iterator<SceneNode> it = bullets.getChildren();
+		while(it.hasNext())
+		{
+			SceneNode b = it.next();
+			if(isOutOfBounds(new Point3D(b.getWorldTranslation().getCol(3))))
+			{
+				deletion.add(b);
+			}
+			else if(b instanceof EnemyBullet)
+			{
+				//Check if player collided, do not check other players
+				if(p1.getWorldBound() == null)System.out.println("Mega");
+				if(b.getWorldBound() == null) System.out.println("Bad");
+				if(p1.getWorldBound().intersects(b.getWorldBound()))
+				{
+					//Hurt player
+					//Remove bullet
+					deletion.add(b);
+				}
+			}
+			else if(b instanceof RegularBullet) //Check for player shot hitting enemy
+			{
+				Iterator<SceneNode> it2 = npcs.getChildren();
+				while(it2.hasNext())
+				{
+					SceneNode a = it2.next();
+					if(a instanceof UFO)
+					{
+						if(a.getWorldBound() == null) System.out.println("super");
+						if(b.getWorldBound() == null) System.out.println("BAD");
+						if(a.getWorldBound().intersects(b.getWorldBound()))
+						{
+							//Remove UFO
+							deletion.add(a);
+							//Remove Bullet
+							deletion.add(b);
+							//Increment score
+							score++;
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		//Delete everything marked for deletion
+		it = deletion.iterator();
+		while(it.hasNext())
+		{
+			SceneNode n = it.next();
+			if(n instanceof UFO)
+			{
+				UFO u = (UFO) n;
+				removeEnemy(u);
+			}
+			else
+			{
+				removeBullet((Bullet) n);
+			}
+		}
 	}
+	
+	public void addSnakingWave(double x)
+	{
+		Point3D p1 = new Point3D(x,yPlane,zSpawn);
+		Point3D p2 = new Point3D(x,yPlane,zSpawn + 1);
+		Point3D p3 = new Point3D(x,yPlane,zSpawn + 2);
+		Point3D p4 = new Point3D(x,yPlane,zSpawn + 3);
+		
+		UFO u1 = createEnemy(p1);
+		UFO u2 = createEnemy(p2);
+		UFO u3 = createEnemy(p3);
+		UFO u4 = createEnemy(p4);
+		
+		npcs.addChild(u1);
+		npcs.addChild(u2);
+		npcs.addChild(u3);
+		npcs.addChild(u4);
+		
+		u1.addController(chaser);
+		chaser.addControlledNode(u1);
+		
+		u2.addController(chaser);
+		chaser.addControlledNode(u2);
+		
+		u3.addController(chaser);
+		chaser.addControlledNode(u3);
+		
+		u4.addController(chaser);
+		chaser.addControlledNode(u4);
+	}
+	
+	public boolean isOutOfBounds(Point3D p)
+	{
+		if(p.getX() > worldX + 5 || p.getX() < -worldX - 5 || p.getZ() < -worldZ - 5 || p.getZ() > worldZ + 5) return true;
+		else return false;
+	}
+	
+	
 
 }
