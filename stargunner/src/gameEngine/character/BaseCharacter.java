@@ -98,8 +98,6 @@ public class BaseCharacter extends Model3DTriMesh {
 		loc = loc.add(dir);
 		location = new Point3D(loc);
 		updateTranslation();
-		foward = foward.add(dir);
-		side = foward.cross(up);
 		//this.updateWorldBound();
 	}
 	
@@ -189,10 +187,10 @@ public class BaseCharacter extends Model3DTriMesh {
 	{
 		Vector3D target = new Vector3D(p);
 		Vector3D pos = new Vector3D(getLocation());
-		Vector3D viewDir = target.add(pos).normalize();
+		Vector3D viewDir = target.minus(pos).normalize();
 		setFowardVector(viewDir);
-		setSideVector(getFowardVector().cross(up));
-		setUpVector(getFowardVector().cross(side));
+		setSideVector(getFowardVector().cross(up).normalize());
+		setUpVector(getFowardVector().cross(side).normalize());
 	}
 	
 }

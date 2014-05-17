@@ -25,7 +25,8 @@ public class RegularBullet extends Bullet {
 				this.setIndexBuffer(triangleBuf);
 		this.setSpeed(0.001f);
 		this.rotate(90, new Vector3D(1,0,0));
-		this.scale(0.1f, 1, 1);
+		this.scale(0.1f, 1, 0.1f);
+		this.updateLocalBound();
 	}
 
 }

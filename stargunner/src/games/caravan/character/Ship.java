@@ -38,6 +38,11 @@ public abstract class Ship extends BaseCharacter {
 		this.myState = myState;
 	}
 	
+	public boolean isDead()
+	{
+		if(myState == state.DEAD) return true;
+		else return false;
+	}
 
 	public long getFireRate() {
 		return fireRateInMillis;

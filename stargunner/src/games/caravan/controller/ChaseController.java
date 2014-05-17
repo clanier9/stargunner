@@ -1,5 +1,7 @@
 package games.caravan.controller;
 
+import games.caravan.CaravanGame;
+import games.caravan.character.Bullet;
 import games.caravan.character.Ship;
 import games.caravan.character.UFO;
 import graphicslib3D.Point3D;
@@ -12,13 +14,21 @@ import sage.scene.SceneNode;
 public class ChaseController extends Controller {
 
 	ArrayList<Ship> players = new ArrayList<Ship>();
+	CaravanGame gw;
 	
-	public ChaseController() {
+	
+	long lastTime;
+	
+	public ChaseController(CaravanGame g) {
 		// TODO Auto-generated constructor stub
+		players = new ArrayList<Ship>();
+		lastTime = System.currentTimeMillis();
+		gw = g;
 	}
 
 	@Override
 	public void update(double time) {
+		long realTime = System.currentTimeMillis();
 		for (SceneNode node : controlledNodes)
 		{
 			if(node instanceof UFO)
@@ -32,26 +42,46 @@ public class ChaseController extends Controller {
 				if(pLoc.getZ() < bLoc.getZ()) //If player is still below you
 				{
 					
-					if(pLoc.getX() - bLoc.getX() < 0.5)
+					if(pLoc.getX() - bLoc.getX() > 0.5)
 					{
 						b.setRotation(150);
 					}
-					else if(pLoc.getX() - bLoc.getX() > 0.5)
+					else if(pLoc.getX() - bLoc.getX() < 0.5)
 					{
 						b.setRotation(210);
 					}
 					else b.setRotation(180);
+					
+					if(realTime - lastTime >= 4000 && bLoc.getZ() < 20)
+					{
+						Bullet[] bul = b.fireAt(player.getLocation());
+						for(int i = 0; i < bul.length; i++)
+						{
+							gw.addBullet(bul[i]);
+						}
+					}
 				}
 				
 				double dist = b.getSpeed() * time;
 				b.moveFoward(dist);
+				
+				
 			}
+		}
+		if(realTime - lastTime >= 4000)
+		{
+			lastTime = realTime;
 		}
 	}
 	
 	public void addPlayer(Ship s)
 	{
 		players.add(s);
+	}
+	
+	public void removeNode(SceneNode s)
+	{
+		controlledNodes.remove(s);
 	}
 
 }
