@@ -4,8 +4,6 @@ import gameEngine.character.BaseCharacter;
 import graphicslib3D.Point3D;
 
 public class NPC extends BaseCharacter {
-	Point3D location;
-	
 	public NPC() {
 		super();
 	}
@@ -14,9 +12,9 @@ public class NPC extends BaseCharacter {
 		super(p);
 	}
 	
-	public double getX() { return location.getX(); } 
-	public double getY() { return location.getY(); } 
-	public double getZ() { return location.getZ(); } 
+	public double getX() { return getLocation().getX(); } 
+	public double getY() { return getLocation().getY(); } 
+	public double getZ() { return getLocation().getZ(); } 
 	 
 	public void updateLocation() { 
 		//TODO 

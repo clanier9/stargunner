@@ -18,6 +18,7 @@ import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Event;
 import gameEngine.character.BaseCharacter;
 import gameEngine.input.action.*;
+import games.caravan.ai.BossController;
 import games.caravan.character.Bullet;
 import games.caravan.character.FighterJet;
 import games.caravan.character.RegularShip;
@@ -84,7 +85,7 @@ public class CaravanGame extends BaseGame {
 	
 	private BaseCharacter p1;
 	private BaseCharacter p2;
-	private BaseCharacter boss;
+	private TRex boss;
 
 	private SkyBox sky;
 	
@@ -102,8 +103,9 @@ public class CaravanGame extends BaseGame {
 	private File scriptFile;
 	
 	private IAudioManager audioMgr;
-	private AudioResource resource1, resource2; 
-	private Sound bossGrowl, bossRoar;
+	private AudioResource resource1, resource2;
+	
+	private BossController bossControl; 
 	
 	public CaravanGame() {
 		score = 0;
@@ -133,8 +135,8 @@ public class CaravanGame extends BaseGame {
 	
 	public void setSoundsOff() {
 		// First release sounds
-		bossGrowl.release(audioMgr); 
-		bossRoar.release(audioMgr);
+		boss.getGrowl().release(audioMgr); 
+		boss.getRoar().release(audioMgr);
 				 
 		// Next release audio resources 
 		resource1.unload();
@@ -170,6 +172,7 @@ public class CaravanGame extends BaseGame {
 		initBoss();
 		initNPCs();
 		initAudio();
+		initControllers();
 		update(0);
 	}
 
@@ -341,10 +344,13 @@ public class CaravanGame extends BaseGame {
 	}
 	
 	private void initBoss() {		
-		boss = new TRex(new Point3D(0,10,10), bossRoar);	
+		boss = new TRex(new Point3D(0,10,10));	
 		boss.scale(3, 3, 3);
 		textureObj(boss, "skin3.png");
+		
 		addGameWorldObject(boss);
+		
+		bossControl = new BossController(this, boss);
 	}
 
 	private void initNPCs() {
@@ -360,21 +366,26 @@ public class CaravanGame extends BaseGame {
 		
 		resource1 = audioMgr.createAudioResource("sounds" + File.separator + "growl.wav", AudioResourceType.AUDIO_SAMPLE); 
 		resource2 = audioMgr.createAudioResource("sounds" + File.separator + "roar.wav", AudioResourceType.AUDIO_SAMPLE); 
-		bossGrowl = new Sound(resource1, SoundType.SOUND_EFFECT, 100, true); 
-		bossRoar = new Sound(resource2, SoundType.SOUND_EFFECT, 100, false); 
-		bossGrowl.initialize(audioMgr); 
-		bossRoar.initialize(audioMgr); 
-		bossGrowl.setMaxDistance(150.0f); 
-		bossGrowl.setMinDistance(10.0f); 
-		bossGrowl.setRollOff(5.0f); 
-		bossGrowl.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
-		bossRoar.setMaxDistance(150.0f); 
-		bossRoar.setMinDistance(10.0f); 
-		bossRoar.setRollOff(5.0f); 
-		bossRoar.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		boss.setGrowl(new Sound(resource1, SoundType.SOUND_EFFECT, 100, true)); 
+		boss.setRoar(new Sound(resource2, SoundType.SOUND_EFFECT, 100, false)); 
+		boss.getGrowl().initialize(audioMgr); 
+		boss.getRoar().initialize(audioMgr); 
+		boss.getGrowl().setMaxDistance(150.0f); 
+		boss.getGrowl().setMinDistance(10.0f); 
+		boss.getGrowl().setRollOff(5.0f); 
+		boss.getGrowl().setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		boss.getRoar().setMaxDistance(150.0f); 
+		boss.getRoar().setMinDistance(10.0f); 
+		boss.getRoar().setRollOff(5.0f); 
+		boss.getRoar().setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
 		setEarParameters(); 
 		
-		bossGrowl.play(); 
+		boss.getGrowl().play(); 
+	}
+	
+	private void initControllers() {
+		
+		
 	}
 
 	private void setEarParameters() {		
@@ -528,6 +539,7 @@ public class CaravanGame extends BaseGame {
 		bulletControl.update(elapsedTimeMS);
 		snakeControl.update(elapsedTimeMS);
 		scroller.update(elapsedTimeMS);
+		bossControl.update(elapsedTimeMS);
 		
 		//Skybox
 		Point3D camLoc = camera.getLocation();
@@ -536,8 +548,8 @@ public class CaravanGame extends BaseGame {
 		sky.setLocalTranslation(camTranslation);
 		
 		//audio
-		bossGrowl.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
-		bossRoar.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		boss.getGrowl().setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		boss.getRoar().setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
 		setEarParameters(); 
 
 		//animations

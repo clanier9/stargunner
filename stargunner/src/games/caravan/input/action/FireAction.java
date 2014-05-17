@@ -6,7 +6,7 @@ import games.caravan.CaravanGame;
 import games.caravan.character.Bullet;
 import games.caravan.character.Ship;
 
-public class FireAction extends  AbstractInputAction {
+public class FireAction extends AbstractInputAction {
 	
 	private Ship ship;
 	private long timeLastFired;

@@ -1,20 +1,36 @@
 package games.caravan.ai;
 
-import games.caravan.character.NPC;
+import games.caravan.character.TRex;
 import sage.ai.behaviortrees.BTAction;
 import sage.ai.behaviortrees.BTStatus;
 
 public class MoveAround extends BTAction {
-	private NPC npc;
+	private TRex npc;
 	
-	public MoveAround(NPC n) {
+	public MoveAround(TRex n) {
 		npc = n;
 	}
 	
 	@Override
 	protected BTStatus update(float elapsedTime) {
-		//TODO
-		//if not already walking, start a walk action to a location
+		npc.setMoving(!(npc.isMoving()));
+		
+		if (npc.isMoving()) {
+			npc.stopAnimation(); 
+		 	npc.startAnimation("Walk");
+		}
+		else {
+			npc.getGrowl().stop();
+			npc.stopAnimation();		 
+			npc.startAnimation("Roar");
+			npc.getRoar().play();	
+			npc.getGrowl().play();
+//			while(npc.isAnimating()) {
+//				
+//			}
+//			npc.stopAnimation();
+		}
+		
 		return BTStatus.BH_SUCCESS;
 	}
 }

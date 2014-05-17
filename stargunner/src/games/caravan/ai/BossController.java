@@ -1,24 +1,19 @@
 package games.caravan.ai;
 
-import gameEngine.character.BaseCharacter;
 import games.caravan.CaravanGame;
-import games.caravan.character.NPC;
-import sage.ai.behaviortrees.BTCompositeType;
-import sage.ai.behaviortrees.BTCondition;
+import games.caravan.character.TRex;
 import sage.ai.behaviortrees.BTSequence;
-import sage.ai.behaviortrees.BehaviorTree;
 
 public class BossController extends NPCcontroller {
 	private CaravanGame game;
-	private NPC boss;
+	private TRex boss;
 	
-	public BossController(CaravanGame g, NPC b) {
+	public BossController(CaravanGame g, TRex b) {
 		game = g;
 		boss = b;
-	}
-	
-	public void startBossControl() { 
-		super.startNPControl();
+		startTime = System.nanoTime(); 
+		lastUpdateTime = startTime; 
+		setupBehaviorTree(); 
 	}
 
 	private void setupBehaviorTree() {
@@ -30,19 +25,16 @@ public class BossController extends NPCcontroller {
 		bt.insert(20, new AttackPlayer(boss)); 
 	}
 	
-	public void npcLoop()
+	public void update(float eTime)
 	{ 
-		while (true)
+		long frameStartTime = System.nanoTime();
+		float elapsedMilliSecs = (frameStartTime-lastUpdateTime)/(1000000.0f);
+		if (elapsedMilliSecs >= 50.0f)
 		{ 
-			long frameStartTime = System.nanoTime();
-			float elapsedMilliSecs = (frameStartTime-lastUpdateTime)/(1000000.0f);
-			if (elapsedMilliSecs >= 50.0f)
-			{ 
-				lastUpdateTime = frameStartTime;
-				boss.updateLocation();
-				bt.update(elapsedMilliSecs);
-			}	
-			Thread.yield();
-		}
+			lastUpdateTime = frameStartTime;
+			boss.updateLocation();
+			bt.update(elapsedMilliSecs);
+		}	
+		Thread.yield();
 	}
 }
