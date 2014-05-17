@@ -9,12 +9,13 @@ import games.caravan.networking.GameServerTCP;
 
 public class Starter {
 	private static final int localPort = 1550;
+	private static int numPlayers;
 		
 	public static void main(String[] args) throws IOException 
 	{
 		Scanner s = new Scanner(System.in);
 		System.out.print("How many players for this game?  ");
-		int numPlayers = s.nextInt();
+		numPlayers = s.nextInt();
 		if (numPlayers == 1) {
 			CaravanGame g = new CaravanGame();
 			g.start();
@@ -48,5 +49,9 @@ public class Starter {
 			System.out.println("Invalid input. Exiting...");
 			System.exit(0);
 		}
+	}
+	
+	public static int getNumPlayers() { 
+		return numPlayers;
 	}
 }

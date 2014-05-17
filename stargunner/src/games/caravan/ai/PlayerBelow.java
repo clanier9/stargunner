@@ -20,5 +20,4 @@ public class PlayerBelow extends BTCondition {
 		if(player.getLocation().getZ() < npc.getLocation().getZ()) return true;
 		else return false;
 	}
-
 }

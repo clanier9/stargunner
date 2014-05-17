@@ -5,16 +5,24 @@ import sage.ai.behaviortrees.BehaviorTree;
 
 public class NPCcontroller
 {
-	private BehaviorTree bt = new BehaviorTree(BTCompositeType.SELECTOR);
-	private long startTime, lastUpdateTime;
+	protected BehaviorTree bt = new BehaviorTree(BTCompositeType.SELECTOR);
+	protected long startTime, lastUpdateTime;
+	protected boolean playerNear = false;
+	
 	public void startNPControl()
 	{ 
 		startTime = System.nanoTime();
 		lastUpdateTime = startTime;
 		setupNPC();
-		//setupBehaviorTree();
+		setupBehaviorTree();
 		npcLoop();
 	}
+	
+	private void setupBehaviorTree() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public void setupNPC()
 	{ 
 		
@@ -34,6 +42,14 @@ public class NPCcontroller
 			}	
 			Thread.yield();
 		}
+	}
+
+	public void setNearFlag(boolean b) {
+		playerNear = b;
+	}
+
+	public boolean getNearFlag() {
+		return playerNear;
 	} 
 	
 }

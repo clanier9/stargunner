@@ -25,5 +25,4 @@ public class TimePassed extends BTCondition
 		}
 		else return false;
 	} 
-
 }

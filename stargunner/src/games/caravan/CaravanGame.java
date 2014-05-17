@@ -12,6 +12,7 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import a3.Starter;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Event;
@@ -148,6 +149,15 @@ public class CaravanGame extends BaseGame {
 		UFO u = new UFO();
 		textureObj(u, "ufo.png");
 		return u;
+	}
+	
+	public boolean checkPlayerProximity() {
+		if (Math.abs(p1.getLocation().getZ() - boss.getLocation().getZ()) <= 100)
+			return true;
+		else if (Starter.getNumPlayers() == 2)
+			if (Math.abs(p2.getLocation().getZ() - boss.getLocation().getZ()) <= 100)
+				return true;
+		return false;
 	}
 
 	protected void initGame()
