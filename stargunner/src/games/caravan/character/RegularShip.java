@@ -8,11 +8,13 @@ public class RegularShip extends Ship {
 	public RegularShip() {
 		super();
 				setFireRate(1000);
+				setSpeed(0.01f);
 	}
 
 	public RegularShip(Point3D p) {
 		super(p);
 				setFireRate(1000);
+				setSpeed(0.01f);
 	}
 
 	@Override

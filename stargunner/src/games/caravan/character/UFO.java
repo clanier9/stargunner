@@ -26,14 +26,14 @@ public class UFO extends Ship {
 
 	public Bullet[] fire() {
 		Bullet[] b = new Bullet[1];
-		b[1] = new EnemyBullet(getLocation());
+		b[0] = new EnemyBullet(getLocation());
 		return b;
 	}
 	
 	public Bullet[] fireAt(Point3D p)
 	{
 		Bullet[] b = fire();
-		b[1].lookAt(p);
+		b[0].lookAt(p);
 		return b;
 	}
 

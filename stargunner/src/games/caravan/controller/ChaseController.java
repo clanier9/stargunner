@@ -1,5 +1,7 @@
 package games.caravan.controller;
 
+import games.caravan.CaravanGame;
+import games.caravan.character.Bullet;
 import games.caravan.character.Ship;
 import games.caravan.character.UFO;
 import graphicslib3D.Point3D;
@@ -12,14 +14,21 @@ import sage.scene.SceneNode;
 public class ChaseController extends Controller {
 
 	ArrayList<Ship> players = new ArrayList<Ship>();
+	CaravanGame gw;
 	
-	public ChaseController() {
+	
+	long lastTime;
+	
+	public ChaseController(CaravanGame g) {
 		// TODO Auto-generated constructor stub
 		players = new ArrayList<Ship>();
+		lastTime = System.currentTimeMillis();
+		gw = g;
 	}
 
 	@Override
 	public void update(double time) {
+		long realTime = System.currentTimeMillis();
 		for (SceneNode node : controlledNodes)
 		{
 			if(node instanceof UFO)
@@ -46,7 +55,20 @@ public class ChaseController extends Controller {
 				
 				double dist = b.getSpeed() * time;
 				b.moveFoward(dist);
+				
+				if(realTime - lastTime >= 4000)
+				{
+					Bullet[] bul = b.fire();
+					for(int i = 0; i < bul.length; i++)
+					{
+						gw.addBullet(bul[i]);
+					}
+				}
 			}
+		}
+		if(realTime - lastTime >= 4000)
+		{
+			lastTime = realTime;
 		}
 	}
 	

@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import graphicslib3D.Point3D;
+import graphicslib3D.Vector3D;
 
 public class EnemyBullet extends Bullet {
 	
@@ -23,6 +24,9 @@ public class EnemyBullet extends Bullet {
 				this.setColorBuffer(colorBuf);
 				this.setIndexBuffer(triangleBuf);
 		this.rotate(180);
+		this.rotate(-90, new Vector3D(1,0,0));
+		this.scale(0.1f, 0.1f, 1);
+		setSpeed(0.001f);
 	}
 	
 	public EnemyBullet(Point3D p, Point3D target)
@@ -38,6 +42,9 @@ public class EnemyBullet extends Bullet {
 				this.setColorBuffer(colorBuf);
 				this.setIndexBuffer(triangleBuf);
 		lookAt(target);	
+		this.rotate(-90, new Vector3D(1,0,0));
+		this.scale(0.1f, 0.1f, 1);
+		setSpeed(0.001f);
 	}
 
 }

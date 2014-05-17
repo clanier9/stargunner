@@ -244,7 +244,7 @@ public class CaravanGame extends BaseGame {
 		initGameObjects();
 		initPlayers();
 		
-		chaser = new ChaseController();
+		chaser = new ChaseController(this);
 		chaser.addPlayer((Ship)p1);
 		
 		addGameWorldObject(createEnemy());
@@ -513,6 +513,11 @@ public class CaravanGame extends BaseGame {
 		chaser.addControlledNode(u);
 		textureObj(u, "ufo.png");
 		return u;
+	}
+	
+	public void removeEnemy()
+	{
+		
 	}
 
 }
