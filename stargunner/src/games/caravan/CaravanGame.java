@@ -241,9 +241,16 @@ public class CaravanGame extends BaseGame {
 		
 		initGameObjects();
 		initPlayers();
-		
+		initNPCs();
 		initAudio();
 		update(0);
+	}
+
+	private void initNPCs() {
+		boss = new TRex(new Point3D(0,10,10), bossRoar);	
+		boss.scale(3, 3, 3);
+		textureObj(boss, "skin3.png");
+		addGameWorldObject(boss);
 	}
 
 	private void initAudio() {
@@ -277,8 +284,7 @@ public class CaravanGame extends BaseGame {
 		audioMgr.getEar().setOrientation(new Vector3D(0,0,1), new Vector3D(0,1,0)); 
 	}
 
-	private void initPlayers() {
-		
+	private void initPlayers() {		
 		p1 = new FighterJet(new Point3D(0,10,-18));
 		p1.scale(.30f,.30f,.30f);
 		p1.rotate(-90, new Vector3D(1,0,0));
@@ -290,11 +296,6 @@ public class CaravanGame extends BaseGame {
 		
 		camera.setLocation(new Point3D(0,25,-23));
 		camera.lookAt(new Point3D(0,0,0), new Vector3D(0,1,0));
-		
-		boss = new TRex(new Point3D(0,10,10));	
-		boss.scale(3, 3, 3);
-		textureObj(boss, "skin3.png");
-		addGameWorldObject(boss);
 	}
 	
 	private void setUpControls(BaseCharacter p)
