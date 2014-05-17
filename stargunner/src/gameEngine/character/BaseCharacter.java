@@ -11,9 +11,9 @@ import sage.scene.TriMesh;
 public class BaseCharacter extends Model3DTriMesh {
 
 	private Point3D location;
-	private Vector3D foward;
-	private Vector3D side;
-	private Vector3D up;
+	protected Vector3D foward;
+	protected Vector3D side;
+	protected Vector3D up;
 	protected UUID id;
 	private float speed;
 	
@@ -98,8 +98,6 @@ public class BaseCharacter extends Model3DTriMesh {
 		loc = loc.add(dir);
 		location = new Point3D(loc);
 		updateTranslation();
-		foward = foward.add(dir);
-		side = foward.cross(up);
 		//this.updateWorldBound();
 	}
 	
@@ -191,8 +189,8 @@ public class BaseCharacter extends Model3DTriMesh {
 		Vector3D pos = new Vector3D(getLocation());
 		Vector3D viewDir = target.minus(pos).normalize();
 		setFowardVector(viewDir);
-		setSideVector(getFowardVector().cross(up));
-		setUpVector(getFowardVector().cross(side));
+		setSideVector(getFowardVector().cross(up).normalize());
+		setUpVector(getFowardVector().cross(side).normalize());
 	}
 	
 }

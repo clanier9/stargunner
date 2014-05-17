@@ -20,6 +20,6 @@ public class RoarAction extends AbstractInputAction {
 		 avatar.stopAnimation(); 
 		 roar.stop();
 		 avatar.startAnimation("Roar");
-		 roar.play();		 
+		 roar.play();
 	 }
 }

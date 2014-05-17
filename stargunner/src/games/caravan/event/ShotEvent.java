@@ -1,16 +1,33 @@
 package games.caravan.event;
 
+import games.caravan.character.Ship;
+import graphicslib3D.Point3D;
 import sage.event.AbstractGameEvent;
 
 public class ShotEvent extends AbstractGameEvent {
 
-	public ShotEvent() {
-		// TODO Auto-generated constructor stub
+	private Point3D position;
+	private Ship player;
+	
+	public ShotEvent(Ship s, Point3D pos) {
+		
+		position = pos;
+		player = s;
 	}
 
 	public ShotEvent(float timeStamp) {
 		super(timeStamp);
 		
 	}
+
+	public Ship getPlayer() {
+		return player;
+	}
+	
+	public Point3D getPosition()
+	{
+		return position;
+	}
+
 
 }

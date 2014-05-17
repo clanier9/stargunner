@@ -51,19 +51,21 @@ public class ChaseController extends Controller {
 						b.setRotation(210);
 					}
 					else b.setRotation(180);
+					
+					if(realTime - lastTime >= 4000 && bLoc.getZ() < 20)
+					{
+						Bullet[] bul = b.fireAt(player.getLocation());
+						for(int i = 0; i < bul.length; i++)
+						{
+							gw.addBullet(bul[i]);
+						}
+					}
 				}
 				
 				double dist = b.getSpeed() * time;
 				b.moveFoward(dist);
 				
-				if(realTime - lastTime >= 4000)
-				{
-					Bullet[] bul = b.fire();
-					for(int i = 0; i < bul.length; i++)
-					{
-						gw.addBullet(bul[i]);
-					}
-				}
+				
 			}
 		}
 		if(realTime - lastTime >= 4000)
@@ -75,6 +77,11 @@ public class ChaseController extends Controller {
 	public void addPlayer(Ship s)
 	{
 		players.add(s);
+	}
+	
+	public void removeNode(SceneNode s)
+	{
+		controlledNodes.remove(s);
 	}
 
 }

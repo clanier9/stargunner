@@ -15,6 +15,7 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import a3.Starter;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Event;
@@ -76,7 +77,6 @@ public class CaravanGame extends BaseGame {
 	private long fileLastModifiedTime = 0;
 	private long lastSpawnTime = 0;
 	
-
 	private HUDString scoreString;
 	private HUDString score2String;
 	private HUDString timeString;
@@ -115,8 +115,8 @@ public class CaravanGame extends BaseGame {
 	private AudioResource resource1, resource2; 
 	private Sound bossGrowl, bossRoar;
 	
-	private static final double worldX = 50;
-	private static final double worldZ = 70;
+	private static final double worldX = 30;
+	private static final double worldZ = 40;
 	private static final double yPlane = 10;
 	private static final double zSpawn = 20;
 	
@@ -139,24 +139,64 @@ public class CaravanGame extends BaseGame {
 	public BaseCharacter getBoss() {
 		return boss;
 	}
+	
+	public void addBullet(Bullet b)
+	{
+		bullets.addChild(b);
+		b.addController(bulletControl);
+		bulletControl.addControlledNode(b);
+	}
+	
+	public UFO createEnemy()
+	{
+		UFO u = new UFO();
+		textureObj(u, "ufo.png");
+		return u;
+	}
+	
+	public boolean checkPlayerProximity() {
+		if (Math.abs(p1.getLocation().getZ() - boss.getLocation().getZ()) <= 100)
+			return true;
+		else if (Starter.getNumPlayers() == 2)
+			if (Math.abs(p2.getLocation().getZ() - boss.getLocation().getZ()) <= 100)
+				return true;
+		return false;
+	}
 
 	protected void initGame()
 	{
+		initScript();
+		initDisplay();
+		initInputs();
+		initGameObjects();
+		initPlayers();
+		initBoss();
+		initNPCs();
+		initAudio();
+		update(0);
+	}
+
+	private void initScript() {
 		ScriptEngineManager factory = new ScriptEngineManager(); 
 		List<ScriptEngineFactory> list = factory.getEngineFactories(); 
 		engine = factory.getEngineByName("js"); 
 		scriptFile = new File(scriptName); 
 		runScript();
-		
-		
-		//renderer = display.getRenderer();
+	}
+	
+	private void initDisplay() {
 		display = this.getDisplaySystem();
 		renderer = display.getRenderer();
 		camera = renderer.getCamera();
 		
+		camera.setLocation(new Point3D(0,25,-23));
+		camera.lookAt(new Point3D(0,0,0), new Vector3D(0,1,0));
+	}
+	
+	private void initInputs() {
 		//Actions 
 		IAction quitGame = new QuitGameAction(this);
-		
+				
 		//Movement
 		IAction lstrafe = new LeftStrafeAction(camera);
 		IAction rstrafe = new RightStrafeAction(camera);
@@ -178,7 +218,7 @@ public class CaravanGame extends BaseGame {
 		im = getInputManager();
 		
 		kbName = im.getKeyboardName();
-		
+				
 		ControllerEnvironment ce = ControllerEnvironment.getDefaultEnvironment();
 		Controller[] cs = ce.getControllers();
 		int kbcount = 0;
@@ -204,8 +244,8 @@ public class CaravanGame extends BaseGame {
 		}
 		
 		String gpName = im.getFirstGamepadName();
-		
-		
+				
+				
 		//Keyboard
 		im.associateAction (
 				kbName, net.java.games.input.Component.Identifier.Key.ESCAPE,
@@ -242,7 +282,7 @@ public class CaravanGame extends BaseGame {
 		im.associateAction (
 				kbName, net.java.games.input.Component.Identifier.Key.RIGHT,
 				right, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
-		
+				
 		//Gamepad
 		if(gpName != null)
 		{
@@ -260,63 +300,12 @@ public class CaravanGame extends BaseGame {
 					IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 		}
 		
-		initGameObjects();
-		initPlayers();
-
-		
-		chaser = new ChaseController(this);
-		chaser.addPlayer((Ship)p1);
-		snakeControl = new SnakeController(2);
-		
-		addGameWorldObject(createEnemy(new Point3D(0,10,16)));
-
-		initNPCs();
-		//initAudio();
-
-		update(0);
 	}
 
-	private void initNPCs() {
-		npcs = new Group();
-		addGameWorldObject(npcs);
-		boss = new TRex(new Point3D(0,10,10), bossRoar);	
-		boss.scale(3, 3, 3);
-		textureObj(boss, "skin3.png");
-		addGameWorldObject(boss);
-	}
 
-	private void initAudio() {
-		audioMgr = AudioManagerFactory.createAudioManager("sage.audio.joal.JOALAudioManager"); 
-		if(!audioMgr.initialize()) { 
-			System.out.println("Audio Manager failed to initialize!"); 
-			return; 
-		} 
+
 		
-		resource1 = audioMgr.createAudioResource("sounds" + File.separator + "growl.wav", AudioResourceType.AUDIO_SAMPLE); 
-		resource2 = audioMgr.createAudioResource("sounds" + File.separator + "roar.wav", AudioResourceType.AUDIO_SAMPLE); 
-		bossGrowl = new Sound(resource1, SoundType.SOUND_EFFECT, 100, true); 
-		bossRoar = new Sound(resource2, SoundType.SOUND_EFFECT, 100, false); 
-		bossGrowl.initialize(audioMgr); 
-		bossRoar.initialize(audioMgr); 
-		bossGrowl.setMaxDistance(150.0f); 
-		bossGrowl.setMinDistance(10.0f); 
-		bossGrowl.setRollOff(3.0f); 
-		bossGrowl.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
-		bossRoar.setMaxDistance(150.0f); 
-		bossRoar.setMinDistance(10.0f); 
-		bossRoar.setRollOff(3.0f); 
-		bossRoar.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
-		setEarParameters(); 
-		
-		bossGrowl.play(); 
-	}
 
-	private void setEarParameters() {		
-		audioMgr.getEar().setLocation(camera.getLocation()); 
-
-		audioMgr.getEar().setLocation(p1.getLocation()); 
-		audioMgr.getEar().setOrientation(new Vector3D(0,0,1), new Vector3D(0,1,0));
-	}
 
 
 	private void initPlayers() {		
@@ -328,38 +317,13 @@ public class CaravanGame extends BaseGame {
 		
 		setUpControls(p1);
 		
+		chaser = new ChaseController(this);
+		chaser.addPlayer((Ship)p1);
+		
 		camera.setLocation(new Point3D(0,25,-23));
 		camera.lookAt(new Point3D(0,0,0), new Vector3D(0,1,0));
 	}
 	
-	private void setUpControls(BaseCharacter p)
-	{
-		IAction lstrafe = new LeftAction(p);
-		IAction rstrafe = new RightAction(p);
-		IAction fwd = new FowardAction(p);
-		IAction bck = new BackwardAction(p);
-		IAction fire = new FireAction((Ship) p, this);
-		
-		im.associateAction (
-				kbName, net.java.games.input.Component.Identifier.Key.UP,
-				fwd, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
-		
-		im.associateAction (
-				kbName, net.java.games.input.Component.Identifier.Key.DOWN,
-				bck, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
-		
-		im.associateAction (
-				kbName, net.java.games.input.Component.Identifier.Key.LEFT,
-				lstrafe, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
-		
-		im.associateAction (
-				kbName, net.java.games.input.Component.Identifier.Key.RIGHT,
-				rstrafe, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
-		im.associateAction (
-				kbName, net.java.games.input.Component.Identifier.Key.Z,
-				fire, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
-	}
-
 	private void initGameObjects() {
 		sky = new SkyBox();
 		Texture spaceTexture = TextureManager.loadTexture2D(texFolder + File.separator +"space.jpg");
@@ -382,13 +346,56 @@ public class CaravanGame extends BaseGame {
 		
 		bulletControl = new BulletController();
 		bullets = new Group();
+		npcs = new Group();
 		
-		snakeControl = new SnakeController(0.0002);
+		snakeControl = new SnakeController(2);
 		
 		addGameWorldObject(bullets);
-		
+		addGameWorldObject(npcs);
 	}
 	
+	private void initBoss() {		
+		boss = new TRex(new Point3D(0,10,10), bossRoar);	
+		boss.scale(3, 3, 3);
+		textureObj(boss, "skin3.png");
+		addGameWorldObject(boss);
+	}
+
+	private void initNPCs() {
+		// TODO Auto-generated method stub
+	}
+
+	private void initAudio() {
+		audioMgr = AudioManagerFactory.createAudioManager("sage.audio.joal.JOALAudioManager"); 
+		if(!audioMgr.initialize()) { 
+			System.out.println("Audio Manager failed to initialize!"); 
+			return; 
+		} 
+		
+		resource1 = audioMgr.createAudioResource("sounds" + File.separator + "growl.wav", AudioResourceType.AUDIO_SAMPLE); 
+		resource2 = audioMgr.createAudioResource("sounds" + File.separator + "roar.wav", AudioResourceType.AUDIO_SAMPLE); 
+		bossGrowl = new Sound(resource1, SoundType.SOUND_EFFECT, 100, true); 
+		bossRoar = new Sound(resource2, SoundType.SOUND_EFFECT, 100, false); 
+		bossGrowl.initialize(audioMgr); 
+		bossRoar.initialize(audioMgr); 
+		bossGrowl.setMaxDistance(150.0f); 
+		bossGrowl.setMinDistance(10.0f); 
+		bossGrowl.setRollOff(5.0f); 
+		bossGrowl.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		bossRoar.setMaxDistance(150.0f); 
+		bossRoar.setMinDistance(10.0f); 
+		bossRoar.setRollOff(5.0f); 
+		bossRoar.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		setEarParameters(); 
+		
+		bossGrowl.play(); 
+	}
+
+	private void setEarParameters() {		
+		audioMgr.getEar().setLocation(p1.getLocation()); 
+		audioMgr.getEar().setOrientation(new Vector3D(0,0,1), new Vector3D(0,1,0)); 
+	}
+
 	public void startScrolling() {
 		background.addController(scroller);
 		scroller.addControlledNode(background);
@@ -435,6 +442,7 @@ public class CaravanGame extends BaseGame {
 		return tb;
 	}
 	
+
 	protected void update(float elapsedTimeMS)
 	{
 		
@@ -444,14 +452,15 @@ public class CaravanGame extends BaseGame {
 		//snakeControl.update(elapsedTimeMS);
 		//scroller.update(elapsedTimeMS);
 		
-		//Skybox
+		
 		if(System.currentTimeMillis() - lastSpawnTime >= 7000)
 		{
 			//Double d = r.nextDouble() * (2*worldX) - (worldX/2);
-			addSnakingWave(0);
+			addChasingWave();
 			lastSpawnTime = System.currentTimeMillis();
 		}
 		
+		//SkyBox
 		Point3D camLoc = camera.getLocation();
 		Matrix3D camTranslation = new Matrix3D();
 		camTranslation.translate(camLoc.getX(), camLoc.getY(), camLoc.getZ());
@@ -465,6 +474,7 @@ public class CaravanGame extends BaseGame {
 		super.update(elapsedTimeMS);
 	}
 	
+
 	public void textureObj(BaseCharacter c, String file) {
 		Texture objTexture = TextureManager.loadTexture2D("materials" + File.separator + file); 
 		objTexture.setApplyMode(Texture.ApplyMode.Replace); 
@@ -475,13 +485,41 @@ public class CaravanGame extends BaseGame {
 		c.updateRenderStates();
 	}
 	
-	public void textureObj(BaseCharacter c, Texture objTexture)
+	public void textureObj(BaseCharacter c, Texture objTexture, int unit)
 	{
 		TextureState objTextureState = (TextureState) display.getRenderer().createRenderState(RenderState.RenderStateType.Texture); 
-		objTextureState.setTexture(objTexture, 0); 
+		objTextureState.setTexture(objTexture, unit); 
 		objTextureState.setEnabled(true); 
 		c.setRenderState(objTextureState); 
 		c.updateRenderStates();
+	}
+	
+	private void setUpControls(BaseCharacter p)
+	{
+		IAction lstrafe = new LeftAction(p);
+		IAction rstrafe = new RightAction(p);
+		IAction fwd = new FowardAction(p);
+		IAction bck = new BackwardAction(p);
+		IAction fire = new FireAction((Ship) p, this);
+		
+		im.associateAction (
+				kbName, net.java.games.input.Component.Identifier.Key.UP,
+				fwd, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		
+		im.associateAction (
+				kbName, net.java.games.input.Component.Identifier.Key.DOWN,
+				bck, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		
+		im.associateAction (
+				kbName, net.java.games.input.Component.Identifier.Key.LEFT,
+				lstrafe, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		
+		im.associateAction (
+				kbName, net.java.games.input.Component.Identifier.Key.RIGHT,
+				rstrafe, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		im.associateAction (
+				kbName, net.java.games.input.Component.Identifier.Key.Z,
+				fire, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 	}
 	
 	private void runScript() 
@@ -536,18 +574,11 @@ public class CaravanGame extends BaseGame {
 		} 
 	}
 	
-
-	public void addBullet(Bullet b)
-	{
-		bullets.addChild(b);
-		b.addController(bulletControl);
-		bulletControl.addControlledNode(b);
-	}
-	
 	public void removeBullet(Bullet b)
 	{
 		bullets.removeChild(b);
 		b.removeController(bulletControl);
+		bulletControl.removeNode(b);
 	}
 	
 	public void setSoundsOff() {
@@ -568,13 +599,23 @@ public class CaravanGame extends BaseGame {
 		UFO u = new UFO();
 		u.addModel(ufoModel);
 		u.setLocation(p);
-		textureObj(u,ufoTexture);
+		textureObj(u,ufoTexture,0);
+		return u;
+	}
+	
+	public UFO createEnemy(Point3D p, int unit)
+	{
+		UFO u = new UFO();
+		u.addModel(ufoModel);
+		u.setLocation(p);
+		textureObj(u,ufoTexture,unit);
 		return u;
 	}
 	
 	public void removeEnemy(UFO u)
 	{
-		removeGameWorldObject(u);
+		npcs.removeChild(u);
+		u.removeController();
 	}
 	
 	public void hitDetection()
@@ -592,8 +633,7 @@ public class CaravanGame extends BaseGame {
 			else if(b instanceof EnemyBullet)
 			{
 				//Check if player collided, do not check other players
-				if(p1.getWorldBound() == null)System.out.println("Mega");
-				if(b.getWorldBound() == null) System.out.println("Bad");
+				b.updateWorldBound();
 				if(p1.getWorldBound().intersects(b.getWorldBound()))
 				{
 					//Hurt player
@@ -603,14 +643,13 @@ public class CaravanGame extends BaseGame {
 			}
 			else if(b instanceof RegularBullet) //Check for player shot hitting enemy
 			{
+				b.updateWorldBound();
 				Iterator<SceneNode> it2 = npcs.getChildren();
 				while(it2.hasNext())
 				{
 					SceneNode a = it2.next();
 					if(a instanceof UFO)
 					{
-						if(a.getWorldBound() == null) System.out.println("super");
-						if(b.getWorldBound() == null) System.out.println("BAD");
 						if(a.getWorldBound().intersects(b.getWorldBound()))
 						{
 							//Remove UFO
@@ -643,8 +682,9 @@ public class CaravanGame extends BaseGame {
 		}
 	}
 	
-	public void addSnakingWave(double x)
+	public void addChasingWave()
 	{
+		Double x = 0.0; 
 		Point3D p1 = new Point3D(x,yPlane,zSpawn);
 		Point3D p2 = new Point3D(x,yPlane,zSpawn + 1);
 		Point3D p3 = new Point3D(x,yPlane,zSpawn + 2);
@@ -671,6 +711,38 @@ public class CaravanGame extends BaseGame {
 		
 		u4.addController(chaser);
 		chaser.addControlledNode(u4);
+		
+	}
+	
+	public void addSnakingWave(double x)
+	{
+		Point3D p1 = new Point3D(x,yPlane,zSpawn);
+		Point3D p2 = new Point3D(x,yPlane,zSpawn + 1);
+		Point3D p3 = new Point3D(x,yPlane,zSpawn + 2);
+		Point3D p4 = new Point3D(x,yPlane,zSpawn + 3);
+		
+		UFO u1 = createEnemy(p1);
+		UFO u2 = createEnemy(p2);
+		UFO u3 = createEnemy(p3);
+		UFO u4 = createEnemy(p4);
+		
+		npcs.addChild(u1);
+		npcs.addChild(u2);
+		npcs.addChild(u3);
+		npcs.addChild(u4);
+		
+		u1.addController(snakeControl);
+		snakeControl.addControlledNode(u1);
+		
+		u2.addController(snakeControl);
+		snakeControl.addControlledNode(u2);
+		
+		u3.addController(snakeControl);
+		snakeControl.addControlledNode(u3);
+		
+		u4.addController(snakeControl);
+		snakeControl.addControlledNode(u4);
+		
 	}
 	
 	public boolean isOutOfBounds(Point3D p)
@@ -678,7 +750,5 @@ public class CaravanGame extends BaseGame {
 		if(p.getX() > worldX + 5 || p.getX() < -worldX - 5 || p.getZ() < -worldZ - 5 || p.getZ() > worldZ + 5) return true;
 		else return false;
 	}
-	
-	
 
 }

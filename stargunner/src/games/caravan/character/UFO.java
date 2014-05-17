@@ -3,6 +3,7 @@ package games.caravan.character;
 import java.io.File;
 
 import sage.model.loader.OBJLoader;
+import sage.scene.Controller;
 import sage.scene.TriMesh;
 import graphicslib3D.Point3D;
 
@@ -10,6 +11,7 @@ public class UFO extends Ship {
 
 	private Ship target;
 	private double xSpawn;
+	private Controller myControl;
 	
 	public UFO() {
 		super();
@@ -56,6 +58,17 @@ public class UFO extends Ship {
 
 	public void setSpawn(double xSpawn) {
 		this.xSpawn = xSpawn;
+	}
+	
+	public void addController(Controller contr)
+	{
+		super.addController(contr);
+		myControl = contr;
+	}
+	
+	public void removeController()
+	{
+		super.removeController(myControl);
 	}
 
 }

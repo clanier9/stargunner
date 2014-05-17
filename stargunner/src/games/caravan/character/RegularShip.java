@@ -5,8 +5,9 @@ import graphicslib3D.Vector3D;
 
 public class RegularShip extends Ship {
 
-	public static final double MAX_X = 50;
-	public static final double MAX_Z = 50;
+	public static final double MAX_X = 10;
+	public static final double MAX_Z = 10;
+	public static final double MIN_Z = -20;
 	
 	public RegularShip() {
 		super();
@@ -41,9 +42,9 @@ public class RegularShip extends Ship {
 			myLoc.setZ(MAX_Z);
 			setLocation(myLoc);
 		}
-		else if(myLoc.getZ() < -MAX_Z)
+		else if(myLoc.getZ() < MIN_Z)
 		{
-			myLoc.setZ(-MAX_Z);
+			myLoc.setZ(MIN_Z);
 			setLocation(myLoc);
 		}
 	}

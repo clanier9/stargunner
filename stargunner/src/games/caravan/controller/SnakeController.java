@@ -27,9 +27,15 @@ public class SnakeController extends Controller {
 				Point3D p = b.getLocation();
 				p.setX(Math.sinh(p.getZ()) * width + b.getSpawn());
 				b.setLocation(p);
+				System.out.println(p);
 			}
 		}
 
+	}
+	
+	public void removeNode(SceneNode s)
+	{
+		controlledNodes.remove(s);
 	}
 
 }

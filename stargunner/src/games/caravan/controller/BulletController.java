@@ -26,5 +26,10 @@ public class BulletController extends Controller {
 			}
 		}
 	}
+	
+	public void removeNode(SceneNode s)
+	{
+		controlledNodes.remove(s);
+	}
 }
 
