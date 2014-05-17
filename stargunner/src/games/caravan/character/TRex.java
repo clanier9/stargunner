@@ -28,24 +28,24 @@ public class TRex extends BaseCharacter {
 	
 	public TRex(Point3D p) {
 		super(p);
-		OBJLoader loader = new OBJLoader(); 
-		TriMesh trex = loader.loadModel("models" + File.separator + "T-Rex.obj"); 
-		addModel(trex);
+//		OBJLoader loader = new OBJLoader(); 
+//		TriMesh trex = loader.loadModel("models" + File.separator + "T-Rex.obj"); 
+//		addModel(trex);
 		
-//		OgreXMLParser loader = new OgreXMLParser(); 
-//		 try 
-//		 { model = loader.loadModel("models/Trex.mesh.xml", 
-//		 "materials/TRexSkin.material", 
-//		 "models/Trex.skeleton.xml"); 
-//		 model.updateGeometricState(0, true); 
-//		 java.util.Iterator<SceneNode> modelIterator = model.iterator(); 
-//		 myObject = (Model3DTriMesh) modelIterator.next(); 
-//		 } 
-//		 catch (Exception e) 
-//		 { e.printStackTrace(); 
-//		 System.exit(1); 
-//		 } 
-
+		OgreXMLParser loader = new OgreXMLParser(); 
+		 try 
+		 { model = loader.loadModel("models/Trex.mesh.xml", 
+		 "materials/skin.material", 
+		 "models/Trex.skeleton.xml"); 
+		 model.updateGeometricState(0, true); 
+		 java.util.Iterator<SceneNode> modelIterator = model.iterator(); 
+		 myObject = (Model3DTriMesh) modelIterator.next(); 
+		 } 
+		 catch (Exception e) 
+		 { e.printStackTrace(); 
+		 System.exit(1); 
+		 } 
+		 addModel(myObject);
 	}
 	
 }

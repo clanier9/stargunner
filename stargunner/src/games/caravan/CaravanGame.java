@@ -103,7 +103,7 @@ public class CaravanGame extends BaseGame {
 	
 	private IAudioManager audioMgr;
 	private AudioResource resource1, resource2; 
-	private Sound bossSound;
+	private Sound bossGrowl, bossRoar;
 	
 	public CaravanGame() {
 		score = 0;
@@ -239,10 +239,10 @@ public class CaravanGame extends BaseGame {
 					IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 		}
 		
-		
-		initPlayers();
 		initGameObjects();
-//		initAudio();
+		initPlayers();
+		
+		initAudio();
 		update(0);
 	}
 
@@ -253,20 +253,27 @@ public class CaravanGame extends BaseGame {
 			return; 
 		} 
 		
-		resource1 = audioMgr.createAudioResource("sounds + " + File.separator + "OverHere.wav", AudioResourceType.AUDIO_SAMPLE); 
-		bossSound = new Sound(resource1, SoundType.SOUND_EFFECT, 100, true); 
-		bossSound.initialize(audioMgr); 
-		bossSound.setMaxDistance(50.0f); 
-		bossSound.setMinDistance(3.0f); 
-		bossSound.setRollOff(5.0f); 
-		bossSound.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		resource1 = audioMgr.createAudioResource("sounds" + File.separator + "growl.wav", AudioResourceType.AUDIO_SAMPLE); 
+		resource2 = audioMgr.createAudioResource("sounds" + File.separator + "roar.wav", AudioResourceType.AUDIO_SAMPLE); 
+		bossGrowl = new Sound(resource1, SoundType.SOUND_EFFECT, 100, true); 
+		bossRoar = new Sound(resource2, SoundType.SOUND_EFFECT, 100, false); 
+		bossGrowl.initialize(audioMgr); 
+		bossRoar.initialize(audioMgr); 
+		bossGrowl.setMaxDistance(150.0f); 
+		bossGrowl.setMinDistance(10.0f); 
+		bossGrowl.setRollOff(3.0f); 
+		bossGrowl.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		bossRoar.setMaxDistance(150.0f); 
+		bossRoar.setMinDistance(10.0f); 
+		bossRoar.setRollOff(3.0f); 
+		bossRoar.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
 		setEarParameters(); 
 		
-		bossSound.play(); 
+		bossGrowl.play(); 
 	}
 
 	private void setEarParameters() {		
-		audioMgr.getEar().setLocation(camera.getLocation()); 
+		audioMgr.getEar().setLocation(p1.getLocation()); 
 		audioMgr.getEar().setOrientation(new Vector3D(0,0,1), new Vector3D(0,1,0)); 
 	}
 
@@ -284,8 +291,9 @@ public class CaravanGame extends BaseGame {
 		camera.setLocation(new Point3D(0,25,-23));
 		camera.lookAt(new Point3D(0,0,0), new Vector3D(0,1,0));
 		
-		boss = new TRex(new Point3D(0,0,20));	
+		boss = new TRex(new Point3D(0,10,10));	
 		boss.scale(3, 3, 3);
+		textureObj(boss, "skin3.png");
 		addGameWorldObject(boss);
 	}
 	
@@ -399,6 +407,8 @@ public class CaravanGame extends BaseGame {
 	
 	protected void update(float elapsedTimeMS)
 	{
+		super.update(elapsedTimeMS);
+		
 		//Update controllers
 		bulletControl.update(elapsedTimeMS);
 		snakeControl.update(elapsedTimeMS);
@@ -410,11 +420,11 @@ public class CaravanGame extends BaseGame {
 		camTranslation.translate(camLoc.getX(), camLoc.getY(), camLoc.getZ());
 		sky.setLocalTranslation(camTranslation);
 		
-//		bossSound.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
-//		setEarParameters(); 
+		bossGrowl.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		bossRoar.setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		setEarParameters(); 
 
-		super.update(elapsedTimeMS);
-	
+		boss.updateAnimation(elapsedTimeMS);
 	}
 	
 	public void textureObj(BaseCharacter c, String file) {
@@ -494,10 +504,12 @@ public class CaravanGame extends BaseGame {
 	
 	public void setSoundsOff() {
 		// First release sounds
-		bossSound.release(audioMgr); 
+		bossGrowl.release(audioMgr); 
+		bossRoar.release(audioMgr);
 				 
 		// Next release audio resources 
 		resource1.unload();
+		resource2.unload();
 		 
 		// Finally shut down the audio manager 
 		audioMgr.shutdown();
