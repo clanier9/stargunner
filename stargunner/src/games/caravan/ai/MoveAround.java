@@ -23,12 +23,8 @@ public class MoveAround extends BTAction {
 			npc.getGrowl().stop();
 			npc.stopAnimation();		 
 			npc.startAnimation("Roar");
-			npc.getRoar().play();	
+			npc.getRoar().play();
 			npc.getGrowl().play();
-//			while(npc.isAnimating()) {
-//				
-//			}
-//			npc.stopAnimation();
 		}
 		
 		return BTStatus.BH_SUCCESS;

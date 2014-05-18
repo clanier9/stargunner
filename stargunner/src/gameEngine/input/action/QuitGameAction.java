@@ -16,7 +16,7 @@ public class QuitGameAction extends AbstractInputAction
 
 	public void performAction(float time, Event event)
 	{ 
-//		((CaravanGame) game).setSoundsOff();
+		((CaravanGame) game).setSoundsOff();
 		game.setGameOver(true); 
 	}
 }
