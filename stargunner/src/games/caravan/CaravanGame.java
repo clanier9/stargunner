@@ -620,6 +620,7 @@ public class CaravanGame extends BaseGame {
 				if(p1.getWorldBound().intersects(b.getWorldBound()))
 				{
 					//Hurt player
+					score = score - 10;
 					//Remove bullet
 					deletion.add(b);
 				}

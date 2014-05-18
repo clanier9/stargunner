@@ -54,6 +54,7 @@ public class SnakeController extends BaseController {
 				Point3D p = b.getLocation();
 				p.setX(Math.sinh(p.getZ()) * width + b.getSpawn());
 				b.setLocation(p);
+				System.out.println(p);
 			}
 		}
 		

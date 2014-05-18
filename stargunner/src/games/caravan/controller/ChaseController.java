@@ -57,7 +57,7 @@ public class ChaseController extends BaseController {
 					
 					if(elapsedTime >= 4000 && bLoc.getZ() < 20)
 					{
-						Bullet[] bul = b.fireAt(player.getLocation());
+						Bullet[] bul = b.fire();
 						for(int i = 0; i < bul.length; i++)
 						{
 							gw.addBullet(bul[i]);
