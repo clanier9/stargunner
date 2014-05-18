@@ -53,6 +53,7 @@ import sage.display.IDisplaySystem;
 import sage.event.EventManager;
 import sage.event.IEventManager;
 import sage.input.IInputManager;
+import sage.input.InputManager;
 import sage.input.action.IAction;
 import sage.model.loader.OBJLoader;
 import sage.renderer.IRenderer;
