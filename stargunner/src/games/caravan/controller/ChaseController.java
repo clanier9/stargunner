@@ -11,29 +11,32 @@ import java.util.ArrayList;
 import sage.scene.Controller;
 import sage.scene.SceneNode;
 
-public class ChaseController extends Controller {
+public class ChaseController extends BaseController {
 
-	ArrayList<Ship> players = new ArrayList<Ship>();
+	Ship player;
 	CaravanGame gw;
 	
 	
 	long lastTime;
+	long elapsedTime;
 	
 	public ChaseController(CaravanGame g) {
 		// TODO Auto-generated constructor stub
-		players = new ArrayList<Ship>();
 		lastTime = System.currentTimeMillis();
 		gw = g;
 	}
 
 	@Override
 	public void update(double time) {
-		long realTime = System.currentTimeMillis();
+		long current = System.currentTimeMillis();
+		long t = current - lastTime;
+		elapsedTime += t;
+		lastTime = current;
+		
 		for (SceneNode node : controlledNodes)
 		{
 			if(node instanceof UFO)
 			{
-				Ship player = players.get(0);
 				UFO b = (UFO) node;
 				
 				Point3D pLoc = player.getLocation();
@@ -52,7 +55,7 @@ public class ChaseController extends Controller {
 					}
 					else b.setRotation(180);
 					
-					if(realTime - lastTime >= 4000 && bLoc.getZ() < 20)
+					if(elapsedTime >= 4000 && bLoc.getZ() < 20)
 					{
 						Bullet[] bul = b.fireAt(player.getLocation());
 						for(int i = 0; i < bul.length; i++)
@@ -62,21 +65,21 @@ public class ChaseController extends Controller {
 					}
 				}
 				
-				double dist = b.getSpeed() * time;
+				double dist = b.getSpeed() * (t);
 				b.moveFoward(dist);
 				
 				
 			}
 		}
-		if(realTime - lastTime >= 4000)
+		if(elapsedTime >= 4000)
 		{
-			lastTime = realTime;
+			elapsedTime = 0;
 		}
 	}
 	
 	public void addPlayer(Ship s)
 	{
-		players.add(s);
+		player = s;
 	}
 	
 	public void removeNode(SceneNode s)
