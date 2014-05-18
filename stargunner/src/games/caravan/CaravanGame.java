@@ -77,6 +77,8 @@ public class CaravanGame extends BaseGame {
 	private int score;
 	private float time;
 	
+	private String gpName;
+	
 	private int rank;
 	private long fileLastModifiedTime = 0;
 	private long lastSpawnTime = 0;
@@ -226,7 +228,7 @@ public class CaravanGame extends BaseGame {
 			}
 		}
 		
-		String gpName = im.getFirstGamepadName();
+		gpName = im.getFirstGamepadName();
 				
 				
 		//Keyboard
@@ -802,6 +804,8 @@ public class CaravanGame extends BaseGame {
 		IAction fwd = new FowardAction(p);
 		IAction bck = new BackwardAction(p);
 		IAction fire = new FireAction((Ship) p, this);
+		IAction xa = new MoveCharX(p);
+		IAction ya = new MoveCharY(p);
 		
 		im.associateAction (
 				kbName, net.java.games.input.Component.Identifier.Key.UP,
@@ -821,6 +825,21 @@ public class CaravanGame extends BaseGame {
 		im.associateAction (
 				kbName, net.java.games.input.Component.Identifier.Key.Z,
 				fire, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		
+		if(gpName != null)
+		{
+			im.associateAction(gpName,
+					net.java.games.input.Component.Identifier.Axis.Y, ya,
+					IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+			im.associateAction(gpName,
+					net.java.games.input.Component.Identifier.Axis.X, xa,
+					IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+			im.associateAction(gpName,
+					net.java.games.input.Component.Identifier.Button._0, fire,
+					IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+			
+		}
+		
 	}
 	
 	public void startScrolling() {
