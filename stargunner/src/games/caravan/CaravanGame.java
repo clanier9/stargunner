@@ -28,6 +28,7 @@ import games.caravan.character.Bullet;
 import games.caravan.character.EnemyBullet;
 import games.caravan.character.FighterJet;
 import games.caravan.character.RegularBullet;
+import games.caravan.character.RegularShip;
 import games.caravan.character.Ship;
 import games.caravan.character.UFO;
 import games.caravan.controller.BulletController;
@@ -416,6 +417,7 @@ public class CaravanGame extends BaseGame {
 		super.update(elapsedTimeMS);
 		
 		hitDetection();
+		playerScript();
 		bossControl.update(elapsedTimeMS);
 		
 		if(System.currentTimeMillis() - lastSpawnTime >= 7000)
@@ -771,6 +773,26 @@ public class CaravanGame extends BaseGame {
 		 
 		// Finally shut down the audio manager 
 		audioMgr.shutdown();
+	}
+	
+	private void playerScript()
+	{
+		long modTime = scriptFile.lastModified();
+		if 
+		(modTime > fileLastModifiedTime)
+		{ 
+			fileLastModifiedTime = modTime;
+			this.runScript();
+			removeGameWorldObject(p1);
+			
+			p1 = (FighterJet) engine.get("p1");
+			this.textureObj(p1, "fighter6.png");
+			chaser.addPlayer((Ship)p1);
+			snakeControl.addPlayer((Ship)p1);
+			setUpControls(p1);
+			
+			addGameWorldObject(p1);
+		}
 	}
 
 	private void setUpControls(BaseCharacter p)
