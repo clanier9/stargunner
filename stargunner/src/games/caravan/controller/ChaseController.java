@@ -55,7 +55,7 @@ public class ChaseController extends BaseController {
 					}
 					else b.setRotation(180);
 					
-					if(elapsedTime >= 4000 && bLoc.getZ() < 20)
+					if(elapsedTime >= 2000 && bLoc.getZ() < 20)
 					{
 						Bullet[] bul = b.fire();
 						for(int i = 0; i < bul.length; i++)
@@ -71,7 +71,7 @@ public class ChaseController extends BaseController {
 				
 			}
 		}
-		if(elapsedTime >= 4000)
+		if(elapsedTime >= 2000)
 		{
 			elapsedTime = 0;
 		}
