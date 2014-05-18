@@ -21,6 +21,7 @@ import a3.Starter;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import gameEngine.character.BaseCharacter;
+import gameEngine.display.MyDisplaySystem;
 import gameEngine.input.action.*;
 import games.caravan.ai.BossController;
 import games.caravan.character.Bullet;
@@ -34,6 +35,8 @@ import games.caravan.character.TRex;
 import games.caravan.controller.ChaseController;
 import games.caravan.controller.ScrollController;
 import games.caravan.controller.SnakeController;
+import games.caravan.event.ShotEvent;
+import games.caravan.event.ShotListener;
 import games.caravan.input.action.FireAction;
 import graphicslib3D.Matrix3D;
 import graphicslib3D.Point3D;
@@ -47,8 +50,10 @@ import sage.audio.Sound;
 import sage.audio.SoundType;
 import sage.camera.ICamera;
 import sage.display.IDisplaySystem;
+import sage.event.EventManager;
 import sage.event.IEventManager;
 import sage.input.IInputManager;
+import sage.input.InputManager;
 import sage.input.action.IAction;
 import sage.model.loader.OBJLoader;
 import sage.renderer.IRenderer;
@@ -69,7 +74,6 @@ import sage.texture.TextureManager;
 public class CaravanGame extends BaseGame {
 
 	private int score;
-	private int score2;
 	private float time;
 	
 	private int rank;
@@ -77,7 +81,6 @@ public class CaravanGame extends BaseGame {
 	private long lastSpawnTime = 0;
 	
 	private HUDString scoreString;
-	private HUDString score2String;
 	private HUDString timeString;
 	
 	private static final String texFolder = "." + File.separator + "Textures";
@@ -111,9 +114,11 @@ public class CaravanGame extends BaseGame {
 	private File scriptFile;
 	
 	private IAudioManager audioMgr;
-	private AudioResource resource1, resource2;
+	private AudioResource resource1, resource2, r3;
 	
 	private BossController bossControl; 
+	private Sound shot;
+	private ShotListener shotlist = new ShotListener(this);
 	
 	private static final double worldX = 20;
 	private static final double worldZ = 40;
@@ -131,7 +136,6 @@ public class CaravanGame extends BaseGame {
 	
 	public CaravanGame() {
 		score = 0;
-		score2 = 0;
 		time = 0;
 		ufoTexture.setApplyMode(Texture.ApplyMode.Replace);
 		ufoTexture1.setApplyMode(Texture.ApplyMode.Replace);
@@ -307,6 +311,8 @@ public class CaravanGame extends BaseGame {
 		
 		snakeControl = new SnakeController(2,this);
 		
+		eventMgr = EventManager.getInstance();
+		eventMgr.addListener(shotlist, ShotEvent.class);
 		addGameWorldObject(bullets);
 		addGameWorldObject(npcs);
 	}
@@ -376,6 +382,7 @@ public class CaravanGame extends BaseGame {
 		
 		resource1 = audioMgr.createAudioResource("sounds" + File.separator + "growl.wav", AudioResourceType.AUDIO_SAMPLE); 
 		resource2 = audioMgr.createAudioResource("sounds" + File.separator + "roar.wav", AudioResourceType.AUDIO_SAMPLE); 
+		r3 = audioMgr.createAudioResource("sounds" + File.separator + "LASER1.wav", AudioResourceType.AUDIO_SAMPLE); 
 		boss.setGrowl(new Sound(resource1, SoundType.SOUND_EFFECT, 100, true)); 
 		boss.setRoar(new Sound(resource2, SoundType.SOUND_EFFECT, 100, false)); 
 		boss.getGrowl().initialize(audioMgr); 
@@ -388,6 +395,13 @@ public class CaravanGame extends BaseGame {
 		boss.getRoar().setMinDistance(15.0f); 
 		boss.getRoar().setRollOff(10.0f); 
 		boss.getRoar().setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
+		
+		shot = new Sound(r3, SoundType.SOUND_EFFECT, 100, false);
+		shot.initialize(audioMgr);
+		shot.setMaxDistance(30);
+		shot.setMinDistance(15);
+		shot.setRollOff(12);
+		
 		setEarParameters(); 
 		
 		boss.getGrowl().play(); 
@@ -810,4 +824,65 @@ public class CaravanGame extends BaseGame {
 		c.setRenderState(objTextureState); 
 		c.updateRenderStates();
 	}	
+	
+	public void playShot(Point3D p)
+	{
+		shot.setLocation(p);
+		shot.play();
+	}
+	
+	protected void initSystem()
+	{
+		System.out.println("YO");
+		//call a local method to create a DisplaySystem object
+		IDisplaySystem display = createDisplaySystem();
+		setDisplaySystem(display);
+		//create an Input Manager
+		IInputManager inputManager = new InputManager();
+		setInputManager(inputManager);
+		//create an (empty) gameworld
+		ArrayList<SceneNode> gameWorld = new ArrayList<SceneNode>();
+		setGameWorld(gameWorld);
+	}
+	
+	private IDisplaySystem createDisplaySystem()
+	{
+		display = new MyDisplaySystem(1024, 720, 24, 60, false,"sage.renderer.jogl.JOGLRenderer");
+		System.out.print("\nWaiting for display creation... ");
+		int count = 0;
+		// wait until display creation completes or a timeout occurs
+		while (!display.isCreated())
+		{
+			try
+			{ 
+				Thread.sleep(10); 
+			}
+			catch (InterruptedException e)
+			{ 
+				throw new RuntimeException("Display creation interrupted"); 
+			}
+			count++;
+			System.out.print("+");
+			if (count % 80 == 0) { System.out.println(); }
+			if (count > 2000) // 20 seconds (approx.)
+			{ 
+				throw new RuntimeException("Unable to create display");
+			}
+		}
+		System.out.println();
+		return display ;
+	}
+	
+	protected void shutdown()
+	{ 
+		display.close() ;
+		super.shutdown();
+		//...other shutdown methods here as necessary...
+	}
+	
+	public IEventManager getEventMgr()
+	{
+		return eventMgr;
+	}
+	
 }

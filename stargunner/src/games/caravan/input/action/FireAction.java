@@ -1,10 +1,12 @@
 package games.caravan.input.action;
 
 import net.java.games.input.Event;
+import sage.event.IEventManager;
 import sage.input.action.AbstractInputAction;
 import games.caravan.CaravanGame;
 import games.caravan.character.Bullet;
 import games.caravan.character.Ship;
+import games.caravan.event.ShotEvent;
 
 public class FireAction extends AbstractInputAction {
 	
@@ -28,6 +30,9 @@ public class FireAction extends AbstractInputAction {
 			{
 				gw.addBullet(b[i]);
 			}
+			IEventManager m = gw.getEventMgr();
+			ShotEvent e = new ShotEvent(ship,ship.getLocation());
+			m.triggerEvent(e);
 		}
 		
 	}

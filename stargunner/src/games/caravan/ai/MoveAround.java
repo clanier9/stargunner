@@ -3,6 +3,7 @@ package games.caravan.ai;
 import java.util.Random;
 
 import games.caravan.character.TRex;
+import graphicslib3D.Matrix3D;
 import sage.ai.behaviortrees.BTAction;
 import sage.ai.behaviortrees.BTStatus;
 

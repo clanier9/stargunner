@@ -1,5 +1,6 @@
 package games.caravan.character;
 
+import graphicslib3D.Matrix3D;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
 import sage.audio.Sound;
