@@ -28,6 +28,7 @@ import games.caravan.character.Bullet;
 import games.caravan.character.EnemyBullet;
 import games.caravan.character.FighterJet;
 import games.caravan.character.RegularBullet;
+import games.caravan.character.RegularShip;
 import games.caravan.character.Ship;
 import games.caravan.character.UFO;
 import games.caravan.controller.BulletController;
@@ -75,6 +76,8 @@ public class CaravanGame extends BaseGame {
 
 	private int score;
 	private float time;
+	
+	private String gpName;
 	
 	private int rank;
 	private long fileLastModifiedTime = 0;
@@ -226,7 +229,7 @@ public class CaravanGame extends BaseGame {
 			}
 		}
 		
-		String gpName = im.getFirstGamepadName();
+		gpName = im.getFirstGamepadName();
 				
 				
 		//Keyboard
@@ -423,6 +426,7 @@ public class CaravanGame extends BaseGame {
 		super.update(elapsedTimeMS);
 		
 		hitDetection();
+		playerScript();
 		bossControl.update(elapsedTimeMS);
 		
 		if(System.currentTimeMillis() - lastSpawnTime >= 7000)
@@ -782,6 +786,26 @@ public class CaravanGame extends BaseGame {
 		// Finally shut down the audio manager 
 		audioMgr.shutdown();
 	}
+	
+	private void playerScript()
+	{
+		long modTime = scriptFile.lastModified();
+		if 
+		(modTime > fileLastModifiedTime)
+		{ 
+			fileLastModifiedTime = modTime;
+			this.runScript();
+			removeGameWorldObject(p1);
+			
+			p1 = (FighterJet) engine.get("p1");
+			this.textureObj(p1, "fighter6.png");
+			chaser.addPlayer((Ship)p1);
+			snakeControl.addPlayer((Ship)p1);
+			setUpControls(p1);
+			
+			addGameWorldObject(p1);
+		}
+	}
 
 	private void setUpControls(BaseCharacter p)
 	{
@@ -790,6 +814,8 @@ public class CaravanGame extends BaseGame {
 		IAction fwd = new FowardAction(p);
 		IAction bck = new BackwardAction(p);
 		IAction fire = new FireAction((Ship) p, this);
+		IAction xa = new MoveCharX(p);
+		IAction ya = new MoveCharY(p);
 		
 		im.associateAction (
 				kbName, net.java.games.input.Component.Identifier.Key.UP,
@@ -809,6 +835,21 @@ public class CaravanGame extends BaseGame {
 		im.associateAction (
 				kbName, net.java.games.input.Component.Identifier.Key.Z,
 				fire, IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		
+		if(gpName != null)
+		{
+			im.associateAction(gpName,
+					net.java.games.input.Component.Identifier.Axis.Y, ya,
+					IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+			im.associateAction(gpName,
+					net.java.games.input.Component.Identifier.Axis.X, xa,
+					IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+			im.associateAction(gpName,
+					net.java.games.input.Component.Identifier.Button._0, fire,
+					IInputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+			
+		}
+		
 	}
 	
 	public void startScrolling() {
