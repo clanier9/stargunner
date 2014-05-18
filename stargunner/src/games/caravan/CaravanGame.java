@@ -114,7 +114,8 @@ public class CaravanGame extends BaseGame {
 	private File scriptFile;
 	
 	private IAudioManager audioMgr;
-	private AudioResource resource1, resource2, r3;
+	private AudioResource resource1, resource2, resource3, r3;
+	private Sound music;
 	
 	private BossController bossControl; 
 	private Sound shot;
@@ -340,23 +341,23 @@ public class CaravanGame extends BaseGame {
 	private void initHUD()
 	{
 		//HUDS
-				timeString = new HUDString("Time = " + time);
-				scoreString = new HUDString ("Score = " + score);
-				
-				timeString.setName("timer");
-				timeString.setLocation(0.2, 0.9);
-				timeString.setRenderMode(sage.scene.SceneNode.RENDER_MODE.ORTHO);
-				timeString.setColor(Color.red);
-				timeString.setCullMode(sage.scene.SceneNode.CULL_MODE.NEVER);
-				camera.addToHUD(timeString);
-				
-				
-				scoreString.setName("score");
-				scoreString.setLocation(0.8, 0.9);
-				scoreString.setRenderMode(sage.scene.SceneNode.RENDER_MODE.ORTHO);
-				scoreString.setColor(Color.red);
-				scoreString.setCullMode(sage.scene.SceneNode.CULL_MODE.NEVER);
-				camera.addToHUD(scoreString);
+		timeString = new HUDString("Time = " + time);
+		scoreString = new HUDString ("Score = " + score);
+		
+		timeString.setName("timer");
+		timeString.setLocation(0.2, 0.9);
+		timeString.setRenderMode(sage.scene.SceneNode.RENDER_MODE.ORTHO);
+		timeString.setColor(Color.red);
+		timeString.setCullMode(sage.scene.SceneNode.CULL_MODE.NEVER);
+		camera.addToHUD(timeString);
+		
+		
+		scoreString.setName("score");
+		scoreString.setLocation(0.8, 0.9);
+		scoreString.setRenderMode(sage.scene.SceneNode.RENDER_MODE.ORTHO);
+		scoreString.setColor(Color.red);
+		scoreString.setCullMode(sage.scene.SceneNode.CULL_MODE.NEVER);
+		camera.addToHUD(scoreString);
 	}
 	
 	private void initBoss() {		
@@ -382,7 +383,12 @@ public class CaravanGame extends BaseGame {
 		
 		resource1 = audioMgr.createAudioResource("sounds" + File.separator + "growl.wav", AudioResourceType.AUDIO_SAMPLE); 
 		resource2 = audioMgr.createAudioResource("sounds" + File.separator + "roar.wav", AudioResourceType.AUDIO_SAMPLE); 
+		resource3 = audioMgr.createAudioResource("sounds" + File.separator + "background.wav", AudioResourceType.AUDIO_SAMPLE); 
 		r3 = audioMgr.createAudioResource("sounds" + File.separator + "LASER1.wav", AudioResourceType.AUDIO_SAMPLE); 
+		
+		music = new Sound(resource3, SoundType.SOUND_MUSIC, 200, true);
+		music.initialize(audioMgr);
+		
 		boss.setGrowl(new Sound(resource1, SoundType.SOUND_EFFECT, 100, true)); 
 		boss.setRoar(new Sound(resource2, SoundType.SOUND_EFFECT, 100, false)); 
 		boss.getGrowl().initialize(audioMgr); 
@@ -404,6 +410,7 @@ public class CaravanGame extends BaseGame {
 		
 		setEarParameters(); 
 		
+		music.play();
 		boss.getGrowl().play(); 
 	}
 	
@@ -764,10 +771,13 @@ public class CaravanGame extends BaseGame {
 		// First release sounds
 		boss.getGrowl().release(audioMgr); 
 		boss.getRoar().release(audioMgr);
-				 
+		music.release(audioMgr);
+		
 		// Next release audio resources 
 		resource1.unload();
 		resource2.unload();
+		resource3.unload();
+		r3.unload();
 		 
 		// Finally shut down the audio manager 
 		audioMgr.shutdown();
@@ -831,19 +841,19 @@ public class CaravanGame extends BaseGame {
 		shot.play();
 	}
 	
-	protected void initSystem()
-	{
-		System.out.println("YO");
-		//call a local method to create a DisplaySystem object
-		IDisplaySystem display = createDisplaySystem();
-		setDisplaySystem(display);
-		//create an Input Manager
-		IInputManager inputManager = new InputManager();
-		setInputManager(inputManager);
-		//create an (empty) gameworld
-		ArrayList<SceneNode> gameWorld = new ArrayList<SceneNode>();
-		setGameWorld(gameWorld);
-	}
+//	protected void initSystem()
+//	{
+//		System.out.println("YO");
+//		//call a local method to create a DisplaySystem object
+//		IDisplaySystem display = createDisplaySystem();
+//		setDisplaySystem(display);
+//		//create an Input Manager
+//		IInputManager inputManager = new InputManager();
+//		setInputManager(inputManager);
+//		//create an (empty) gameworld
+//		ArrayList<SceneNode> gameWorld = new ArrayList<SceneNode>();
+//		setGameWorld(gameWorld);
+//	}
 	
 	private IDisplaySystem createDisplaySystem()
 	{
