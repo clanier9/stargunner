@@ -1,9 +1,11 @@
 package games.caravan;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -113,7 +115,7 @@ public class CaravanGame extends BaseGame {
 	
 	private BossController bossControl; 
 	
-	private static final double worldX = 30;
+	private static final double worldX = 20;
 	private static final double worldZ = 40;
 	private static final double yPlane = 10;
 	private static final double zSpawn = 20;
@@ -121,6 +123,9 @@ public class CaravanGame extends BaseGame {
 	OBJLoader obj = new OBJLoader();
 	TriMesh ufoModel = obj.loadModel("models" + File.separator + "ufo.obj");
 	Texture ufoTexture = TextureManager.loadTexture2D("materials" + File.separator + "ufo.png"); 
+	Texture ufoTexture1 = TextureManager.loadTexture2D("materials" + File.separator + "ufo.png"); 
+	Texture ufoTexture2 = TextureManager.loadTexture2D("materials" + File.separator + "ufo.png"); 
+	Texture ufoTexture3 = TextureManager.loadTexture2D("materials" + File.separator + "ufo.png"); 
 	Random r = new Random();
 	private TerrainBlock theTerrain;
 	
@@ -129,6 +134,9 @@ public class CaravanGame extends BaseGame {
 		score2 = 0;
 		time = 0;
 		ufoTexture.setApplyMode(Texture.ApplyMode.Replace);
+		ufoTexture1.setApplyMode(Texture.ApplyMode.Replace);
+		ufoTexture2.setApplyMode(Texture.ApplyMode.Replace);
+		ufoTexture3.setApplyMode(Texture.ApplyMode.Replace);
 	}
 	
 	protected void initGame()
@@ -138,6 +146,7 @@ public class CaravanGame extends BaseGame {
 		initInputs();
 		initGameObjects();
 		initPlayers();
+		initHUD();
 		initBoss();
 		initNPCs();
 		initAudio();
@@ -293,9 +302,10 @@ public class CaravanGame extends BaseGame {
 		
 		bulletControl = new BulletController();
 		bullets = new Group();
+	
 		npcs = new Group();
 		
-		snakeControl = new SnakeController(2);
+		snakeControl = new SnakeController(2,this);
 		
 		addGameWorldObject(bullets);
 		addGameWorldObject(npcs);
@@ -314,8 +324,33 @@ public class CaravanGame extends BaseGame {
 		chaser = new ChaseController(this);
 		chaser.addPlayer((Ship)p1);
 		
+		snakeControl = new SnakeController(2,this);
+		snakeControl.addPlayer((Ship)p1);
+		
 		camera.setLocation(new Point3D(0,25,-23));
 		camera.lookAt(new Point3D(0,0,0), new Vector3D(0,1,0));
+	}
+	
+	private void initHUD()
+	{
+		//HUDS
+				timeString = new HUDString("Time = " + time);
+				scoreString = new HUDString ("Score = " + score);
+				
+				timeString.setName("timer");
+				timeString.setLocation(0.2, 0.9);
+				timeString.setRenderMode(sage.scene.SceneNode.RENDER_MODE.ORTHO);
+				timeString.setColor(Color.red);
+				timeString.setCullMode(sage.scene.SceneNode.CULL_MODE.NEVER);
+				camera.addToHUD(timeString);
+				
+				
+				scoreString.setName("score");
+				scoreString.setLocation(0.8, 0.9);
+				scoreString.setRenderMode(sage.scene.SceneNode.RENDER_MODE.ORTHO);
+				scoreString.setColor(Color.red);
+				scoreString.setCullMode(sage.scene.SceneNode.CULL_MODE.NEVER);
+				camera.addToHUD(scoreString);
 	}
 	
 	private void initBoss() {		
@@ -367,16 +402,16 @@ public class CaravanGame extends BaseGame {
 		super.update(elapsedTimeMS);
 		
 		hitDetection();
-		//Update controllers
-		//bulletControl.update(elapsedTimeMS);
-		//snakeControl.update(elapsedTimeMS);
-		//scroller.update(elapsedTimeMS);
 		bossControl.update(elapsedTimeMS);
 		
 		if(System.currentTimeMillis() - lastSpawnTime >= 7000)
 		{
-			//Double d = r.nextDouble() * (2*worldX) - (worldX/2);
-			addChasingWave();
+			Double d = r.nextDouble() * (2*worldX) - (worldX/2);
+			Double d1 = r.nextDouble() * (2*worldX) - (worldX/2);
+			Double d2 = r.nextDouble() * (2*worldX) - (worldX/2);
+			Double d3 = r.nextDouble() * (2*worldX) - (worldX/2);
+			addChasingWave(d,d1,d2,d3);
+			//addSnakingWave(0);
 			lastSpawnTime = System.currentTimeMillis();
 		}
 		
@@ -396,6 +431,12 @@ public class CaravanGame extends BaseGame {
 		
 		boss.update(elapsedTimeMS);
 		
+		// update the HUD
+		scoreString.setText("Score = " + score);
+		time += elapsedTimeMS;
+		DecimalFormat df = new DecimalFormat("0.0");
+		timeString.setText("Time = " + df.format(time/1000));
+		
 		super.update(elapsedTimeMS);
 	}
 
@@ -406,18 +447,17 @@ public class CaravanGame extends BaseGame {
 		bulletControl.addControlledNode(b);
 	}
 	
-	public void addChasingWave()
+	public void addChasingWave(double x1, double x2, double x3, double x4)
 	{
-		Double x = 0.0; 
-		Point3D p1 = new Point3D(x,yPlane,zSpawn);
-		Point3D p2 = new Point3D(x,yPlane,zSpawn + 1);
-		Point3D p3 = new Point3D(x,yPlane,zSpawn + 2);
-		Point3D p4 = new Point3D(x,yPlane,zSpawn + 3);
+		Point3D p1 = new Point3D(x1,yPlane,zSpawn);
+		Point3D p2 = new Point3D(x2,yPlane,zSpawn);
+		Point3D p3 = new Point3D(x3,yPlane,zSpawn);
+		Point3D p4 = new Point3D(x4,yPlane,zSpawn);
 		
-		UFO u1 = createEnemy(p1);
-		UFO u2 = createEnemy(p2);
-		UFO u3 = createEnemy(p3);
-		UFO u4 = createEnemy(p4);
+		UFO u1 = createEnemy(p1,0);
+		UFO u2 = createEnemy(p2,1);
+		UFO u3 = createEnemy(p3,2);
+		UFO u4 = createEnemy(p4,3);
 		
 		npcs.addChild(u1);
 		npcs.addChild(u2);
@@ -441,14 +481,14 @@ public class CaravanGame extends BaseGame {
 	public void addSnakingWave(double x)
 	{
 		Point3D p1 = new Point3D(x,yPlane,zSpawn);
-		Point3D p2 = new Point3D(x,yPlane,zSpawn + 1);
-		Point3D p3 = new Point3D(x,yPlane,zSpawn + 2);
-		Point3D p4 = new Point3D(x,yPlane,zSpawn + 3);
+		Point3D p2 = new Point3D(x,yPlane,zSpawn + 3);
+		Point3D p3 = new Point3D(x,yPlane,zSpawn + 6);
+		Point3D p4 = new Point3D(x,yPlane,zSpawn + 9);
 		
-		UFO u1 = createEnemy(p1);
-		UFO u2 = createEnemy(p2);
-		UFO u3 = createEnemy(p3);
-		UFO u4 = createEnemy(p4);
+		UFO u1 = createEnemy(p1,0);
+		UFO u2 = createEnemy(p2,1);
+		UFO u3 = createEnemy(p3,2);
+		UFO u4 = createEnemy(p4,3);
 		
 		npcs.addChild(u1);
 		npcs.addChild(u2);
@@ -499,7 +539,14 @@ public class CaravanGame extends BaseGame {
 		UFO u = new UFO();
 		u.addModel(ufoModel);
 		u.setLocation(p);
-		textureObj(u,ufoTexture,unit);
+		if(unit == 0)
+		textureObj(u,ufoTexture,0);
+		else if(unit == 1)
+		textureObj(u,ufoTexture1,0);
+		else if(unit == 2)
+		textureObj(u,ufoTexture2,0);
+		else if(unit == 3)
+		textureObj(u,ufoTexture3,0);
 		return u;
 	}
 	

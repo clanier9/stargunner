@@ -3,7 +3,7 @@ package games.caravan.controller;
 import sage.scene.Controller;
 import sage.scene.SceneNode;
 
-public class ScrollController extends Controller {
+public class ScrollController extends BaseController {
 
 	private double translationRate;
 	

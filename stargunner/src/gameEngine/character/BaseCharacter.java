@@ -191,6 +191,9 @@ public class BaseCharacter extends Model3DTriMesh {
 		setFowardVector(viewDir);
 		setSideVector(getFowardVector().cross(up).normalize());
 		setUpVector(getFowardVector().cross(side).normalize());
+		this.rotate((float) new Vector3D(0,0,1).dot(foward), up);
 	}
+	
+	
 	
 }

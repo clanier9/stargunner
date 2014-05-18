@@ -5,13 +5,14 @@ import java.io.File;
 import sage.model.loader.OBJLoader;
 import sage.scene.Controller;
 import sage.scene.TriMesh;
+import games.caravan.controller.BaseController;
 import graphicslib3D.Point3D;
 
 public class UFO extends Ship {
 
 	private Ship target;
 	private double xSpawn;
-	private Controller myControl;
+	private BaseController myControl;
 	
 	public UFO() {
 		super();
@@ -19,7 +20,7 @@ public class UFO extends Ship {
 		TriMesh ufo = loader.loadModel("models" + File.separator + "ufo.obj"); 
 		addModel(ufo);
 		setSpawn(getLocation().getX());
-		setSpeed(0.001f);
+		setSpeed(0.007f);
 	}
 
 	public UFO(Point3D p) {
@@ -28,7 +29,7 @@ public class UFO extends Ship {
 		TriMesh ufo = loader.loadModel("models" + File.separator + "ufo.obj"); 
 		addModel(ufo);
 		setSpawn(getLocation().getX());
-		setSpeed(0.001f);
+		setSpeed(0.007f);
 	}
 
 	public Bullet[] fire() {
@@ -60,7 +61,7 @@ public class UFO extends Ship {
 		this.xSpawn = xSpawn;
 	}
 	
-	public void addController(Controller contr)
+	public void addController(BaseController contr)
 	{
 		super.addController(contr);
 		myControl = contr;
@@ -69,6 +70,7 @@ public class UFO extends Ship {
 	public void removeController()
 	{
 		super.removeController(myControl);
+		myControl.removeNode(this);
 	}
 
 }

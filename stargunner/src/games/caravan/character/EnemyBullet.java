@@ -24,8 +24,9 @@ public class EnemyBullet extends Bullet {
 				this.setColorBuffer(colorBuf);
 				this.setIndexBuffer(triangleBuf);
 		this.rotate(180);
-		this.scale(0.5f, 0.1f, 0.5f);
-		setSpeed(0.001f);
+		this.rotate(90, new Vector3D(1,0,0));
+		this.scale(0.1f, 0.5f, 0.1f);
+		setSpeed(0.007f);
 		this.updateLocalBound();
 	}
 	
