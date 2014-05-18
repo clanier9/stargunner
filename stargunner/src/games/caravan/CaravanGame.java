@@ -127,6 +127,7 @@ public class CaravanGame extends BaseGame {
 	Texture ufoTexture2 = TextureManager.loadTexture2D("materials" + File.separator + "ufo.png"); 
 	Texture ufoTexture3 = TextureManager.loadTexture2D("materials" + File.separator + "ufo.png"); 
 	Random r = new Random();
+	private TerrainBlock theTerrain;
 	
 	public CaravanGame() {
 		score = 0;
@@ -292,10 +293,10 @@ public class CaravanGame extends BaseGame {
 		
 		scroller = new ScrollController(0.002);
 		
-		TerrainBlock t = initTerrain();
-		t.scale(2, 1, 2);
+		theTerrain = initTerrain();
+		theTerrain.scale(2, 1, 2);
 		background = new Group();
-		background.addChild(t);
+		background.addChild(theTerrain);
 		 
 		addGameWorldObject(background);		
 		
@@ -353,8 +354,8 @@ public class CaravanGame extends BaseGame {
 	}
 	
 	private void initBoss() {		
-		boss = new TRex(new Point3D(0,10,10));	
-		boss.scale(3, 3, 3);
+		boss = new TRex(new Point3D(0,3.5,10), theTerrain);	
+		boss.scale(2, 2, 2);
 		textureObj(boss, "skin3.png");
 		
 		addGameWorldObject(boss);
@@ -379,13 +380,13 @@ public class CaravanGame extends BaseGame {
 		boss.setRoar(new Sound(resource2, SoundType.SOUND_EFFECT, 100, false)); 
 		boss.getGrowl().initialize(audioMgr); 
 		boss.getRoar().initialize(audioMgr); 
-		boss.getGrowl().setMaxDistance(150.0f); 
-		boss.getGrowl().setMinDistance(10.0f); 
-		boss.getGrowl().setRollOff(5.0f); 
+		boss.getGrowl().setMaxDistance(200.0f); 
+		boss.getGrowl().setMinDistance(15.0f); 
+		boss.getGrowl().setRollOff(10.0f); 
 		boss.getGrowl().setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
-		boss.getRoar().setMaxDistance(150.0f); 
-		boss.getRoar().setMinDistance(10.0f); 
-		boss.getRoar().setRollOff(5.0f); 
+		boss.getRoar().setMaxDistance(200.0f); 
+		boss.getRoar().setMinDistance(15.0f); 
+		boss.getRoar().setRollOff(10.0f); 
 		boss.getRoar().setLocation(new Point3D(boss.getWorldTranslation().getCol(3))); 
 		setEarParameters(); 
 		
@@ -427,6 +428,8 @@ public class CaravanGame extends BaseGame {
 
 		//animations
 		boss.updateAnimation(elapsedTimeMS);
+		
+		boss.update(elapsedTimeMS);
 		
 		// update the HUD
 		scoreString.setText("Score = " + score);
@@ -591,6 +594,12 @@ public class CaravanGame extends BaseGame {
 		{ 
 			System.out.println ("Null ptr exception reading " + scriptFile + e3);
 		} 
+	}
+	
+	@Override
+	public void exit() {
+		setSoundsOff();
+		super.exit();
 	}
 	
 	public BaseCharacter getBoss() {
