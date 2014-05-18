@@ -880,19 +880,18 @@ public class CaravanGame extends BaseGame {
 		shot.play();
 	}
 	
-//	protected void initSystem()
-//	{
-//		System.out.println("YO");
-//		//call a local method to create a DisplaySystem object
-//		IDisplaySystem display = createDisplaySystem();
-//		setDisplaySystem(display);
-//		//create an Input Manager
-//		IInputManager inputManager = new InputManager();
-//		setInputManager(inputManager);
-//		//create an (empty) gameworld
-//		ArrayList<SceneNode> gameWorld = new ArrayList<SceneNode>();
-//		setGameWorld(gameWorld);
-//	}
+	protected void initSystem()
+	{
+		//call a local method to create a DisplaySystem object
+		IDisplaySystem display = createDisplaySystem();
+		setDisplaySystem(display);
+		//create an Input Manager
+		IInputManager inputManager = new InputManager();
+		setInputManager(inputManager);
+		//create an (empty) gameworld
+		ArrayList<SceneNode> gameWorld = new ArrayList<SceneNode>();
+		setGameWorld(gameWorld);
+	}
 	
 	private IDisplaySystem createDisplaySystem()
 	{
