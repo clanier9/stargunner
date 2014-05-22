@@ -3,6 +3,8 @@ package games.caravan;
 import games.caravan.character.Bullet;
 import games.caravan.character.RegularShip;
 import games.caravan.character.Ship;
+import games.caravan.event.NetworkShotListener;
+import games.caravan.event.ShotEvent;
 import games.caravan.networking.GameClientTCP;
 import graphicslib3D.Point3D;
 
@@ -11,6 +13,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.UUID;
 
+import sage.event.EventManager;
+import sage.event.IEventManager;
 import sage.networking.IGameConnection.ProtocolType;
 import sage.scene.SceneNode;
 
@@ -22,6 +26,7 @@ public class CaravanNetworkingGame extends CaravanGame
 	private GameClientTCP thisClient;
 	private boolean connected;
 	private Point3D lastPosition;
+	private NetworkShotListener ns;
 
 	// assumes main() gets address/port from command line 
 	public CaravanNetworkingGame(String serverAddr, int sPort) 
@@ -30,6 +35,9 @@ public class CaravanNetworkingGame extends CaravanGame
 		this.serverAddress = serverAddr; 
 		this.serverPort = sPort; 
 		this.serverProtocol = ProtocolType.TCP; 
+		ns = new NetworkShotListener(this);
+		IEventManager eventMgr = EventManager.getInstance();
+		eventMgr.addListener(ns, ShotEvent.class);
 	} 
 	
 	protected void initGame() 
@@ -109,7 +117,7 @@ public class CaravanNetworkingGame extends CaravanGame
 	
 	public void fireMessage()
 	{
-		thisClient.sendFireMessages();
+		thisClient.sendFireMessage();
 	}
 }
 

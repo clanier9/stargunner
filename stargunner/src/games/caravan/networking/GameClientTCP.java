@@ -176,6 +176,19 @@ public class GameClientTCP extends GameConnectionClient
 		}
 	} 
 	
+	public void sendFireMessage()
+	{
+		try 
+		{ 
+			String message = new String("fire," + id.toString()); 
+			sendPacket(message); 
+		} 
+		catch (IOException e) 
+		{ 
+			e.printStackTrace();
+		}
+	}
+	
 	public void sendDetailsForMessage(UUID remId, Point3D pos) 
 	{
 		try 
