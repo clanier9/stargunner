@@ -12,12 +12,6 @@ public class GhostAvatar extends FighterJet
 		id=ghostID;
 		setLocation(ghostPosition);
 	}
-	
-	@Override
-	public Bullet[] fire() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public void move(Point3D ghostPosition) {
 		setLocation(ghostPosition);
