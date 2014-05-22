@@ -69,6 +69,11 @@ public class GameClientTCP extends GameConnectionClient
 				Point3D ghostPosition = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4]));
 				moveGhostAvatar(ghostID, ghostPosition);
 			} 
+			else if(msgTokens[0].compareTo("fire") == 0) // receive “move” 
+			{ 
+				UUID ghostID = UUID.fromString(msgTokens[1]); 
+				fireGhostBullet(ghostID);
+			} 
 			else if (msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
 			{
 				// format: dsfr, remoteId, x,y,z 
@@ -122,6 +127,11 @@ public class GameClientTCP extends GameConnectionClient
 	private void moveGhostAvatar(UUID ghostID, Point3D ghostPosition) {	
 		if (ghost!=null) 
 			ghost.move(ghostPosition);
+	}
+	
+	private void fireGhostBullet(UUID ghostID) {	
+		if (ghost!=null) 
+			ghost.fire();
 	}
 
 	public void sendCreateMessage(Point3D pos) 
