@@ -17,7 +17,7 @@ CaravanNetworkingGame gw;
 	public boolean handleEvent(IGameEvent event) {
 		
 		ShotEvent shot = (ShotEvent) event;
-		
+		System.out.println("Hey");
 		gw.fireMessage();
 		
 		return false;

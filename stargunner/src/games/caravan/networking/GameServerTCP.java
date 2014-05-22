@@ -76,7 +76,7 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 				sendMoveMessages(clientID, pos);
 			}
 			
-			else if(msgTokens[0].compareTo("fire") == 0) // receive “move” 
+			else if(msgTokens[0].compareTo("fire") == 0) // receive “fire” 
 			{ 
 				UUID clientID = UUID.fromString(msgTokens[1]);
 				sendFireMessages(clientID);

@@ -1,6 +1,7 @@
 package games.caravan.networking;
 
 import games.caravan.CaravanNetworkingGame;
+import games.caravan.character.Bullet;
 import games.caravan.character.GhostAvatar;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
@@ -131,7 +132,13 @@ public class GameClientTCP extends GameConnectionClient
 	
 	private void fireGhostBullet(UUID ghostID) {	
 		if (ghost!=null) 
-			ghost.fire();
+		{
+			Bullet[] b = ghost.fire();
+			for(int i = 0; i < b.length; i++)
+			{
+				game.addBullet(b[i]);
+			}
+		}
 	}
 
 	public void sendCreateMessage(Point3D pos) 
