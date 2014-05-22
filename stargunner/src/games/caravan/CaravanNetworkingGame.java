@@ -106,5 +106,10 @@ public class CaravanNetworkingGame extends CaravanGame
 	public boolean removeGameWorldObject(SceneNode s) {
 		return super.removeGameWorldObject(s);
 	}
+	
+	public void fireMessage()
+	{
+		thisClient.sendFireMessages();
+	}
 }
 
