@@ -1,6 +1,7 @@
 package games.caravan.networking;
 
 import games.caravan.CaravanNetworkingGame;
+import games.caravan.character.Bullet;
 import games.caravan.character.GhostAvatar;
 import graphicslib3D.Point3D;
 import graphicslib3D.Vector3D;
@@ -69,6 +70,11 @@ public class GameClientTCP extends GameConnectionClient
 				Point3D ghostPosition = new Point3D(Double.parseDouble(msgTokens[2]), Double.parseDouble(msgTokens[3]), Double.parseDouble(msgTokens[4]));
 				moveGhostAvatar(ghostID, ghostPosition);
 			} 
+			else if(msgTokens[0].compareTo("fire") == 0) // receive “move” 
+			{ 
+				UUID ghostID = UUID.fromString(msgTokens[1]); 
+				fireGhostBullet(ghostID);
+			} 
 			else if (msgTokens[0].compareTo("dsfr") == 0) // receive “details for” 
 			{
 				// format: dsfr, remoteId, x,y,z 
@@ -123,6 +129,17 @@ public class GameClientTCP extends GameConnectionClient
 		if (ghost!=null) 
 			ghost.move(ghostPosition);
 	}
+	
+	private void fireGhostBullet(UUID ghostID) {	
+		if (ghost!=null) 
+		{
+			Bullet[] b = ghost.fire();
+			for(int i = 0; i < b.length; i++)
+			{
+				game.addBullet(b[i]);
+			}
+		}
+	}
 
 	public void sendCreateMessage(Point3D pos) 
 	{	
@@ -165,6 +182,19 @@ public class GameClientTCP extends GameConnectionClient
 			e.printStackTrace();
 		}
 	} 
+	
+	public void sendFireMessage()
+	{
+		try 
+		{ 
+			String message = new String("fire," + id.toString()); 
+			sendPacket(message); 
+		} 
+		catch (IOException e) 
+		{ 
+			e.printStackTrace();
+		}
+	}
 	
 	public void sendDetailsForMessage(UUID remId, Point3D pos) 
 	{

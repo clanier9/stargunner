@@ -76,6 +76,12 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 				sendMoveMessages(clientID, pos);
 			}
 			
+			else if(msgTokens[0].compareTo("fire") == 0) // receive “fire” 
+			{ 
+				UUID clientID = UUID.fromString(msgTokens[1]);
+				sendFireMessages(clientID);
+			}
+			
 			else if(msgTokens[0].compareTo("ready") == 0) // receive “ready” 
 			{ 
 				System.out.println("ready received to server from " + msgTokens[1]);
@@ -157,6 +163,19 @@ public class GameServerTCP extends GameConnectionServer<UUID>
 			message += "," + position.getX(); 
 			message += "," + position.getY(); 
 			message += "," + position.getZ();
+			forwardPacketToAll(message, clientID); 
+		} 
+		catch (IOException e) 
+		{ 
+			e.printStackTrace();
+		}
+	} 
+	
+	public void sendFireMessages(UUID clientID) 
+	{  
+		try 
+		{ 
+			String message = new String("fire," + clientID.toString()); 
 			forwardPacketToAll(message, clientID); 
 		} 
 		catch (IOException e) 

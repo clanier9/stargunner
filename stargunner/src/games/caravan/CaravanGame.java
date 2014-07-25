@@ -365,7 +365,7 @@ public class CaravanGame extends BaseGame {
 	private void initBoss() {		
 		boss = new TRex(new Point3D(0,3.5,10), theTerrain);	
 		boss.scale(2, 2, 2);
-		textureObj(boss, "skin3.png");
+		textureObj(boss, "skin2.png");
 		
 		addGameWorldObject(boss);
 		
